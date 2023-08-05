@@ -24,11 +24,8 @@ struct NormalNavigationStackId: NavigationStackId {
 
 public struct SharedNavigationStackId: NavigationStackId {
     public var stackId: String
-}
-
-extension NavigationStackId {
-    public static var anyId: NavigationStackId {
-        NormalNavigationStackId(stackId: UUID().uuidString)
+    public init(stackId: String) {
+        self.stackId = stackId
     }
 }
 
