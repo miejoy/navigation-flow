@@ -36,21 +36,22 @@ public struct NavigationStackFlow<Content: View>: View {
     }
     
     public var body: some View {
-        NavigationView {
-            NavigationStack(path: $navStack.arrPaths.animation(.linear(duration: 0))) {
+        print("update")
+        return NavigationView {
+            NavigationStack(path: $navStack.arrPaths) {
                 content
                     .navigationDestination(for: NavigationPage.self) { page in
                         navStack.makePushView(of: page, on: sceneId)
                     }
             }
             .environment(\.navStack, navStack)
-            // .onAppear {
-            //     if let prevNavStack = prevNavStack {
-            //         NavigationMonitor.shared.fatalError("NavigationStack[\(navStack.stackId)] nested in NavigationStack[\(prevNavStack.stackId)]. This is not supported by now")
-            //     }
-            //     navManager.addNavStack(navStack, at: viewPath)
-            //     // 暂时不需要 remove
-            // }
+            .onAppear {
+                if let prevNavStack = prevNavStack {
+                    NavigationMonitor.shared.fatalError("NavigationStack[\(navStack.stackId)] nested in NavigationStack[\(prevNavStack.stackId)]. This is not supported by now")
+                }
+                navManager.addNavStack(navStack, at: viewPath)
+                // 暂时不需要 remove
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ public class NavigationManager {
     func addNavStack(_ navStack: Store<NavigationState>, at viewPath: ViewPath) {
         if let sharedStackId = navStack.stackId as? SharedNavigationStackId {
             if let oldContainer = mapSharedStacks[sharedStackId.stackId] {
-            // 共享状态如果存在旧的，需要判断是否为同一个
+                // 共享状态如果存在旧的，需要判断是否为同一个
                 if let oldStack = oldContainer.navStack,
                    oldStack !== navStack {
                     // 不同，需要抛异常

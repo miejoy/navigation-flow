@@ -11,7 +11,42 @@ import ViewFlow
 import SwiftUI
 
 extension Store where State == NavigationState {
-    // MARK: - Present
+    // MARK: - Push
+    
+    // MARK: -Push With View
+    
+    /// 推入展示对应界面
+    ///
+    /// - Parameter view: 需要展示界面
+    /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
+    @inlinable
+    public func push<P: PushableView>(
+        _ view: P,
+        baseOn route: AnyViewRoute? = nil
+    ) {
+        if route == nil {
+            self.send(action: .push(view, baseOn: route))
+        } else {
+            withAnimation {
+                self.send(action: .push(view, baseOn: route))
+            }
+        }
+    }
+    
+    /// 从跟视图推入展示对应界面
+    ///
+    /// - Parameter view: 需要展示界面
+    /// - Parameter initData: 需要展示界面初始化所需要的数据
+    @inlinable
+    public func pushOnRoot<P:PushableView>(
+        _ view: P
+    ) {
+        withAnimation {
+            self.send(action: .pushOnRoot(view))
+        }
+    }
+    
+    // MARK: -Push With View Type
     
     /// 推入展示对应界面
     ///
@@ -53,11 +88,11 @@ extension Store where State == NavigationState {
     /// - Parameter initData: 需要展示界面初始化所需要的数据
     @inlinable
     public func pushOnRoot<P:PushableView>(
-        _ viewType:P.Type,
+        _ viewType: P.Type,
         _ initData: P.InitData
-    ) where P.InitData == Void {
+    ) {
         withAnimation {
-            self.send(action: .pushOnRoot(P.self))
+            self.send(action: .pushOnRoot(P.self, initData))
         }
     }
     
@@ -66,12 +101,14 @@ extension Store where State == NavigationState {
     /// - Parameter viewType: 需要展示界面的类型
     @inlinable
     public func pushOnRoot<P:PushableView>(
-        _ viewType:P.Type
+        _ viewType: P.Type
     ) where P.InitData == Void {
         withAnimation {
             self.send(action: .pushOnRoot(P.self))
         }
     }
+    
+    // MARK: -Push With Route
     
     /// 推入展示对应路由的界面
     ///
