@@ -11,6 +11,12 @@ struct PushedViewMaker {
     
     let run: (Any) -> AnyView
     
+    init<V: PushableView>(_ pushableView: V) {
+        self.run = { data -> AnyView in
+            return AnyView(pushableView)
+        }
+    }
+    
     init<V: PushableView>(_ pushableViewType: V.Type) {
         self.run = { data -> AnyView in
             if let data = data as? V.InitData {

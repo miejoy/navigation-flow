@@ -34,9 +34,9 @@ public class NavigationManager {
         return container.navStack
     }
     
-    func addNavStack(_ navStack: Store<NavigationState>, with navStackId: NavigationStackId, at viewPath: ViewPath) {
-        if let sharedStackId = navStackId as? SharedNavigationStackId {
-            if let oldContainer = mapSharedStacks[navStackId.stackId] {
+    func addNavStack(_ navStack: Store<NavigationState>, at viewPath: ViewPath) {
+        if let sharedStackId = navStack.stackId as? SharedNavigationStackId {
+            if let oldContainer = mapSharedStacks[sharedStackId.stackId] {
             // 共享状态如果存在旧的，需要判断是否为同一个
                 if let oldStack = oldContainer.navStack,
                    oldStack !== navStack {
@@ -45,7 +45,7 @@ public class NavigationManager {
                 }
             }
             navStack.setDestroyCallback { [weak self] _ in
-                self?.mapSharedStacks.removeValue(forKey: navStackId.stackId)
+                self?.mapSharedStacks.removeValue(forKey: sharedStackId.stackId)
             }
         }
     }

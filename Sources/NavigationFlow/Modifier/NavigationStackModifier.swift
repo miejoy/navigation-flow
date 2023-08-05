@@ -11,8 +11,8 @@ import SwiftUI
 public struct NavigationStackModifier: ViewModifier {
     var stackId: NavigationStackId
     
-    public init() {
-        self.stackId = NormalNavigationStackId(stackId: UUID().uuidString)
+    public init(_ stackId: String = UUID().uuidString) {
+        self.stackId = NormalNavigationStackId(stackId: stackId)
     }
     
     public init(shared: SharedNavigationStackId) {

@@ -62,22 +62,27 @@ public final class NavigationCenter {
     }
     
     func canMakeView(of page: NavigationPage) -> Bool {
-        registerMap[page.viewRouteData.route] != nil
+        registerMap[page.viewRoute] != nil
     }
     
     func makeView(of page: NavigationPage, for navStore: Store<NavigationState>, on sceneId: SceneId) -> AnyView {
         if let viewMaker = page.viewMaker {
-            return viewMaker.makeView(page.viewRouteData.initData)
+            return viewMaker.makeView(page.viewInitData)
         }
         
-        if let externalViewMaker = externalViewMaker {
-            return externalViewMaker(page.viewRouteData, sceneId)
+        if let externalViewMaker = externalViewMaker,
+           let viewRouteData = page.viewRoute.wrapper(page.viewInitData) {
+            return externalViewMaker(viewRouteData, sceneId)
         }
+        
+        if let viewMaker = registerMap[page.viewRoute] {
+            return viewMaker.makeView(page.viewInitData)
+        }
+        
         let notFoundView = VStack {
-            Text("Push view not found with route '\(page.viewRouteData.route.description)'")
+            Text("Push view not found with route '\(page.viewRoute.description)'")
             Button("Dismiss") {
                 navStore.send(action: .pop())
-                // Store<PresentState>.shared(on: sceneId).dismissTopView()
             }
         }
         return AnyView(notFoundView)

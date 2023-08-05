@@ -10,21 +10,24 @@ import DataFlow
 import ViewFlow
 import SwiftUI
 
-public struct NavigationState: FullStorableViewState, InitializableState {
+public struct NavigationState: FullStorableViewState {
     
     public typealias BindAction = NavigationAction
     
+    var stackId: NavigationStackId
     var arrPaths: [NavigationPage] = []
     
-    public init() {
+    public init(_ stackId: NavigationStackId) {
+        self.stackId = stackId
     }
     
     public static func loadReducers(on store: Store<NavigationState>) {
         store.registerDefault { state, action in
             switch action.action {
             case .push(let pushAction):
-                if !NavigationCenter.shared.canMakeView(of: pushAction.page) {
-                    NavigationMonitor.shared.record(event: .pushFailedNotRegister(pushAction.page.viewRouteData.route))
+                if pushAction.page.viewMaker == nil &&
+                    !NavigationCenter.shared.canMakeView(of: pushAction.page) {
+                    NavigationMonitor.shared.record(event: .pushFailedNotRegister(pushAction.page.viewRoute))
                     return
                 }
                 if let baseOn = pushAction.baseOnRoute {
@@ -33,7 +36,7 @@ public struct NavigationState: FullStorableViewState, InitializableState {
                         state.arrPaths.removeAll()
                     case .route(let viewRoute):
                         let index = state.arrPaths.lastIndex { page in
-                            viewRoute == page.viewRouteData.route
+                            viewRoute == page.viewRoute
                         }
                         guard let index = index else {
                             // 没有找到，需要记录
@@ -55,7 +58,7 @@ public struct NavigationState: FullStorableViewState, InitializableState {
                         return
                     case .route(let viewRoute):
                         let index = state.arrPaths.lastIndex { page in
-                            viewRoute == page.viewRouteData.route
+                            viewRoute == page.viewRoute
                         }
                         guard let index = index else {
                             // 没有找到，需要记录
@@ -69,11 +72,16 @@ public struct NavigationState: FullStorableViewState, InitializableState {
                     }
                 }
                 if popAction.popCount > 0 {
-                    state.arrPaths.removeLast(Int(popAction.popCount))
+                    if popAction.popCount <= state.arrPaths.count {
+                        state.arrPaths.removeLast(Int(popAction.popCount))
+                    } else {
+                        NavigationMonitor.shared.fatalError("Pop \(popAction.popCount) view while \(state.arrPaths.count) exist")
+                        state.arrPaths.removeAll()
+                    }
                 }
             case .remove(let viewRoute):
                 let index = state.arrPaths.lastIndex { page in
-                    viewRoute == page.viewRouteData.route
+                    viewRoute == page.viewRoute
                 }
                 guard let index = index else {
                     // 没有找到，需要记录
@@ -93,17 +101,25 @@ struct NavigationPage: Hashable {
     }
     
     var pageUUID: UUID = UUID()
-    var viewRouteData: ViewRouteData
+    var viewRoute: AnyViewRoute
+    var viewInitData: Any
     // 界面构造器，如果有，优先使用这个
     var viewMaker: PushedViewMaker?
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(viewRouteData.route)
+        hasher.combine(viewRoute)
         hasher.combine(pageUUID)
     }
     
     init(_ viewRouteData: ViewRouteData, viewMaker: PushedViewMaker? = nil) {
-        self.viewRouteData = viewRouteData
+        self.viewRoute = viewRouteData.route
+        self.viewInitData = viewRouteData.initData
+        self.viewMaker = viewMaker
+    }
+    
+    init(viewRoute: AnyViewRoute, viewInitData: Any, viewMaker: PushedViewMaker? = nil) {
+        self.viewRoute = viewRoute
+        self.viewInitData = viewInitData
         self.viewMaker = viewMaker
     }
 }
