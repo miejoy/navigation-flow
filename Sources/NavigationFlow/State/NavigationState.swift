@@ -62,7 +62,7 @@ public struct NavigationState: FullStorableViewState {
                         }
                         guard let index = index else {
                             // 没有找到，需要记录
-                            NavigationMonitor.shared.record(event: .popFailedTargetnRouteNotFound(viewRoute))
+                            NavigationMonitor.shared.record(event: .popFailedTargetRouteNotFound(viewRoute))
                             return
                         }
                         let nextIndex = state.arrPaths.index(after: index)
@@ -85,7 +85,7 @@ public struct NavigationState: FullStorableViewState {
                 }
                 guard let index = index else {
                     // 没有找到，需要记录
-                    NavigationMonitor.shared.record(event: .removeFailedTargetnRouteNotFound(viewRoute))
+                    NavigationMonitor.shared.record(event: .removeFailedTargetRouteNotFound(viewRoute))
                     return
                 }
                 state.arrPaths.remove(at: index)

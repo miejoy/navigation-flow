@@ -13,8 +13,8 @@ import ViewFlow
 public enum NavigationEvent {
     case pushFailedNotRegister(AnyViewRoute)
     case pushFailedBaseOnRouteNotFound(AnyViewRoute)
-    case popFailedTargetnRouteNotFound(AnyViewRoute)
-    case removeFailedTargetnRouteNotFound(AnyViewRoute)
+    case popFailedTargetRouteNotFound(AnyViewRoute)
+    case removeFailedTargetRouteNotFound(AnyViewRoute)
     case fatalError(String)
 }
 
