@@ -174,6 +174,39 @@ extension Store where State == NavigationState {
         }
     }
     
+    // MARK: -Push With Route Data
+    
+    /// 推入展示对应路由的界面
+    ///
+    /// - Parameter routeData: 需要展示界面的路由数据
+    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    @inlinable
+    public func push(
+        _ routeData: ViewRouteData,
+        baseOn: AnyViewRoute? = nil
+    ) {
+        if baseOn == nil {
+            self.send(action: .push(routeData, baseOn: baseOn))
+        } else {
+            withAnimation {
+                self.send(action: .push(routeData, baseOn: baseOn))
+            }
+        }
+    }
+    
+    /// 从跟视图推入展示对应路由的界面
+    ///
+    /// - Parameter routeData: 需要展示界面的路由数据
+    /// - Parameter initData: 需要展示界面初始化所需要的数据
+    @inlinable
+    public func pushOnRoot(
+        _ routeData: ViewRouteData
+    ) {
+        withAnimation {
+            self.send(action: .pushOnRoot(routeData))
+        }
+    }
+    
     // MARK: - Pop
     
     /// 弹出消失指定数量的界面
