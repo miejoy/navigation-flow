@@ -18,12 +18,10 @@ public class NavigationManager {
     
     let sceneId: SceneId
     var mapSharedStacks: [String:NavigationStackContainer] = [:]
-    weak var sceneStore: Store<SceneState>?
     
     init(sceneStore: Store<SceneState>?) {
         self.sceneId = sceneStore?.sceneId ?? .main
         self.mapSharedStacks = [:]
-        self.sceneStore = sceneStore
     }
     
     func sharedNavStack(of navStackId: SharedNavigationStackId) -> Store<NavigationState>? {

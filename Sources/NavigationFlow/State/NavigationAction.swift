@@ -254,6 +254,52 @@ extension NavigationAction {
         )
     }
     
+    // MARK: -Push With AnyRoute
+    
+    /// 推入展示对应路由的界面
+    ///
+    /// - Parameter route: 需要展示界面的路由
+    /// - Parameter initData: 需要展示界面初始化所需要的数据
+    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Returns Self: 返回构造好的自己
+    public static func push(
+        _ route: AnyViewRoute,
+        _ data: Any = Void(),
+        baseOn: AnyViewRoute? = nil
+    ) -> Self {
+        var routeOf: InnerRouteOf? = nil
+        if let baseOn = baseOn {
+            routeOf = .route(baseOn)
+        }
+        return push(route, data, routeOf)
+    }
+    
+    /// 从跟视图推入展示对应路由的界面
+    ///
+    /// - Parameter route: 需要展示界面的路由
+    /// - Parameter initData: 需要展示界面初始化所需要的数据
+    /// - Returns Self: 返回构造好的自己
+    public static func pushOnRoot(
+        _ route: AnyViewRoute,
+        _ data: Any = Void()
+    ) -> Self {
+        push(route, data, .root)
+    }
+    
+    static func push(
+        _ route: AnyViewRoute,
+        _ data: Any = Void(),
+        _ baseOn: InnerRouteOf? = nil
+    ) -> Self {
+        .init(
+            action: .push(
+                .init(
+                    page: .init(viewRoute: route, viewInitData: data),
+                    baseOnRoute: baseOn
+                )
+            )
+        )
+    }
     
     // MARK: - Pop
     

@@ -25,11 +25,13 @@ public struct NavigationState: FullStorableViewState {
         store.registerDefault { state, action in
             switch action.action {
             case .push(let pushAction):
+                var navPage = pushAction.page
                 if pushAction.page.viewMaker == nil &&
-                    !NavigationCenter.shared.canMakeView(of: pushAction.page) {
+                    !NavigationCenter.shared.canMakeView(of: &navPage) {
                     NavigationMonitor.shared.record(event: .pushFailedNotRegister(pushAction.page.viewRoute))
                     return
                 }
+                
                 if let baseOn = pushAction.baseOnRoute {
                     switch baseOn {
                     case .root:
@@ -49,7 +51,7 @@ public struct NavigationState: FullStorableViewState {
                         }
                     }
                 }
-                state.arrPaths.append(pushAction.page)
+                state.arrPaths.append(navPage)
             case .pop(let popAction):
                 if let baseOn = popAction.targetRoute {
                     switch baseOn {
@@ -100,11 +102,11 @@ struct NavigationPage: Hashable {
         lhs.pageUUID == rhs.pageUUID
     }
     
-    var pageUUID: UUID = UUID()
-    var viewRoute: AnyViewRoute
+    let pageUUID: UUID = UUID()
+    let viewRoute: AnyViewRoute
     var viewInitData: Any
     // 界面构造器，如果有，优先使用这个
-    var viewMaker: PushedViewMaker?
+    let viewMaker: PushedViewMaker?
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(viewRoute)

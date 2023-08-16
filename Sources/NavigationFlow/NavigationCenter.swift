@@ -14,7 +14,6 @@ public final class NavigationCenter {
     public static let shared: NavigationCenter = .init()
     
     var registerMap: [AnyViewRoute: PushedViewMaker] = [:]
-    var externalViewMaker: ((_ routeData: ViewRouteData, _ sceneId: SceneId) -> AnyView)? = nil
     
     /// 使用默认路由注册对应展示界面
     @inlinable
@@ -54,25 +53,18 @@ public final class NavigationCenter {
         registerMap[key] = .init(V.self)
     }
     
-    public func registerExternalViewMaker(_ viewMaker: @escaping (_ routeData: ViewRouteData, _ sceneId: SceneId) -> AnyView) {
-        if externalViewMaker != nil {
-            NavigationMonitor.shared.fatalError("Duplicate registration of External View Maker")
+    func canMakeView(of page: inout NavigationPage) -> Bool {
+        if let viewMaker = registerMap[page.viewRoute],
+            let initData = viewMaker.check(page.viewInitData) {
+            page.viewInitData = initData
+            return true
         }
-        externalViewMaker = viewMaker
-    }
-    
-    func canMakeView(of page: NavigationPage) -> Bool {
-        registerMap[page.viewRoute] != nil
+        return false
     }
     
     func makeView(of page: NavigationPage, for navStore: Store<NavigationState>, on sceneId: SceneId) -> AnyView {
         if let viewMaker = page.viewMaker {
             return viewMaker.makeView(page.viewInitData)
-        }
-        
-        if let externalViewMaker = externalViewMaker,
-           let viewRouteData = page.viewRoute.wrapper(page.viewInitData) {
-            return externalViewMaker(viewRouteData, sceneId)
         }
         
         if let viewMaker = registerMap[page.viewRoute] {
