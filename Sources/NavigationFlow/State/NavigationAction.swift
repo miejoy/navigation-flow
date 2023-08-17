@@ -46,31 +46,36 @@ extension NavigationAction {
     /// 推入展示对应界面
     ///
     /// - Parameter view: 需要展示界面
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push<P:PushableView>(
         _ view: P,
+        _ title: String? = nil,
         baseOn route: AnyViewRoute? = nil
     ) -> Self {
         var routeOf: InnerRouteOf? = nil
         if let route = route {
             routeOf = .route(route)
         }
-        return push(view, routeOf)
+        return push(view, title, routeOf)
     }
     
     /// 从跟视图推入展示对应界面
     ///
     /// - Parameter view: 需要展示界面
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Returns Self: 返回构造好的自己
     public static func pushOnRoot<P:PushableView>(
-        _ view: P
+        _ view: P,
+        _ title: String? = nil
     ) -> Self {
-        push(view, .root)
+        push(view, title, .root)
     }
     
     static func push<P:PushableView>(
         _ view: P,
+        _ title: String? = nil,
         _ baseOn: InnerRouteOf? = nil
     ) -> Self {
         .init(
@@ -79,6 +84,7 @@ extension NavigationAction {
                     page: .init(
                         viewRoute: P.defaultRoute.eraseToAnyRoute(),
                         viewInitData: (),
+                        title: title,
                         viewMaker: .init(view)
                     ),
                     baseOnRoute: baseOn
@@ -93,61 +99,70 @@ extension NavigationAction {
     ///
     /// - Parameter viewType: 需要展示界面的类型
     /// - Parameter initData: 需要展示界面初始化所需要的数据
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push<P:PushableView>(
         _ viewType: P.Type,
         _ initData: P.InitData,
+        _ title: String? = nil,
         baseOn route: AnyViewRoute? = nil
     ) -> Self {
         var routeOf: InnerRouteOf? = nil
         if let route = route {
             routeOf = .route(route)
         }
-        return push(P.self, initData, routeOf)
+        return push(P.self, initData, title, routeOf)
     }
     
     /// 推入展示对应无参数初始化界面
     ///
     /// - Parameter viewType: 需要展示界面的类型
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push<P:PushableView>(
         _ viewType: P.Type,
+        _ title: String? = nil,
         baseOn: AnyViewRoute? = nil
     ) -> Self where P.InitData == Void {
         var routeOf: InnerRouteOf? = nil
         if let baseOn = baseOn {
             routeOf = .route(baseOn)
         }
-        return push(P.self, (), routeOf)
+        return push(P.self, (), title, routeOf)
     }
     
     /// 从跟视图推入展示对应界面
     ///
     /// - Parameter viewType: 需要展示界面的类型
     /// - Parameter initData: 需要展示界面初始化所需要的数据
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Returns Self: 返回构造好的自己
     public static func pushOnRoot<P:PushableView>(
         _ viewType: P.Type,
-        _ initData: P.InitData
+        _ initData: P.InitData,
+        _ title: String? = nil
     ) -> Self {
-        push(P.self, initData, .root)
+        push(P.self, initData, title, .root)
     }
     
     /// 从跟视图推入展示对应无参数初始化界面
     ///
     /// - Parameter viewType: 需要展示界面的类型
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Returns Self: 返回构造好的自己
     public static func pushOnRoot<P:PushableView>(
-        _ viewType: P.Type
+        _ viewType: P.Type,
+        _ title: String? = nil
     ) -> Self where P.InitData == Void {
-        push(P.self, (), .root)
+        push(P.self, (), title, .root)
     }
     
     static func push<P:PushableView>(
         _ viewType:P.Type,
         _ initData: P.InitData,
+        _ title: String? = nil,
         _ baseOn: InnerRouteOf? = nil
     ) -> Self {
         .init(
@@ -155,6 +170,7 @@ extension NavigationAction {
                 .init(
                     page: .init(
                         P.defaultRoute.wrapper(initData),
+                        title: title,
                         viewMaker: .init(P.self)
                     ),
                     baseOnRoute: baseOn
@@ -169,46 +185,52 @@ extension NavigationAction {
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push<InitData>(
         _ route: ViewRoute<InitData>,
         _ data: InitData,
+        _ title: String? = nil,
         baseOn: AnyViewRoute? = nil
     ) -> Self {
         var routeOf: InnerRouteOf? = nil
         if let baseOn = baseOn {
             routeOf = .route(baseOn)
         }
-        return push(route.wrapper(data), routeOf)
+        return push(route.wrapper(data), title, routeOf)
     }
     
     /// 推入展示对应无参数路由的界面
     ///
     /// - Parameter route: 需要展示界面的路由
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push(
         _ route: ViewRoute<Void>,
+        _ title: String? = nil,
         baseOn: AnyViewRoute? = nil
     ) -> Self {
         var routeOf: InnerRouteOf? = nil
         if let baseOn = baseOn {
             routeOf = .route(baseOn)
         }
-        return push(route.wrapper(()), routeOf)
+        return push(route.wrapper(()), title, routeOf)
     }
     
     /// 从跟视图推入展示对应路由的界面
     ///
     /// - Parameter route: 需要展示界面的路由
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Parameter initData: 需要展示界面初始化所需要的数据
     /// - Returns Self: 返回构造好的自己
     public static func pushOnRoot<InitData>(
         _ route: ViewRoute<InitData>,
-        _ data: InitData
+        _ data: InitData,
+        _ title: String? = nil
     ) -> Self {
-        push(route.wrapper(data), .root)
+        push(route.wrapper(data), title, .root)
     }
     
     /// 从跟视图推入展示对应无参数路由的界面
@@ -216,38 +238,53 @@ extension NavigationAction {
     /// - Parameter route: 需要展示界面的路由
     /// - Returns Self: 返回构造好的自己
     public static func pushOnRoot(
-        _ route: ViewRoute<Void>
+        _ route: ViewRoute<Void>,
+        _ title: String? = nil
     ) -> Self {
-        push(route.wrapper(()), .root)
+        push(route.wrapper(()), title, .root)
     }
     
     // MARK: -Push With RouteData
     
+    /// 推入展示对应无参数路由的界面
+    ///
+    /// - Parameter routeData: 需要展示界面的路由数据
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
+    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Returns Self: 返回构造好的自己
     public static func push(
         _ routeData: ViewRouteData,
+        _ title: String? = nil,
         baseOn: AnyViewRoute? = nil
     ) -> Self {
         var routeOf: InnerRouteOf? = nil
         if let baseOn = baseOn {
             routeOf = .route(baseOn)
         }
-        return push(routeData, routeOf)
+        return push(routeData, title, routeOf)
     }
     
+    /// 从跟视图推入展示对应路由的界面
+    ///
+    /// - Parameter routeData: 需要展示界面的路由数据
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
+    /// - Returns Self: 返回构造好的自己
     public static func pushOnRoot(
-        _ routeData: ViewRouteData
+        _ routeData: ViewRouteData,
+        _ title: String? = nil
     ) -> Self {
-        push(routeData, .root)
+        push(routeData, title, .root)
     }
     
     static func push(
         _ viewRootData: ViewRouteData,
+        _ title: String? = nil,
         _ baseOn: InnerRouteOf? = nil
     ) -> Self {
         .init(
             action: .push(
                 .init(
-                    page: .init(viewRootData),
+                    page: .init(viewRootData, title: title),
                     baseOnRoute: baseOn
                 )
             )
@@ -260,41 +297,46 @@ extension NavigationAction {
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push(
         _ route: AnyViewRoute,
         _ data: Any = Void(),
+        _ title: String? = nil,
         baseOn: AnyViewRoute? = nil
     ) -> Self {
         var routeOf: InnerRouteOf? = nil
         if let baseOn = baseOn {
             routeOf = .route(baseOn)
         }
-        return push(route, data, routeOf)
+        return push(route, data, title, routeOf)
     }
     
     /// 从跟视图推入展示对应路由的界面
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
+    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Returns Self: 返回构造好的自己
     public static func pushOnRoot(
         _ route: AnyViewRoute,
-        _ data: Any = Void()
+        _ data: Any = Void(),
+        _ title: String? = nil
     ) -> Self {
-        push(route, data, .root)
+        push(route, data, title, .root)
     }
     
     static func push(
         _ route: AnyViewRoute,
         _ data: Any = Void(),
+        _ title: String? = nil,
         _ baseOn: InnerRouteOf? = nil
     ) -> Self {
         .init(
             action: .push(
                 .init(
-                    page: .init(viewRoute: route, viewInitData: data),
+                    page: .init(viewRoute: route, viewInitData: data, title: title),
                     baseOnRoute: baseOn
                 )
             )
