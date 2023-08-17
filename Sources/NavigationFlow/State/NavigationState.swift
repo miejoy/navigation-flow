@@ -103,7 +103,7 @@ struct NavigationPage: Hashable {
     }
     
     let pageUUID: UUID = UUID()
-    let title: String? = nil
+    let title: String?
     let viewRoute: AnyViewRoute
     var viewInitData: Any
     // 界面构造器，如果有，优先使用这个
@@ -117,12 +117,14 @@ struct NavigationPage: Hashable {
     init(_ viewRouteData: ViewRouteData, title: String? = nil, viewMaker: PushedViewMaker? = nil) {
         self.viewRoute = viewRouteData.route
         self.viewInitData = viewRouteData.initData
+        self.title = title
         self.viewMaker = viewMaker
     }
     
     init(viewRoute: AnyViewRoute, viewInitData: Any, title: String? = nil, viewMaker: PushedViewMaker? = nil) {
         self.viewRoute = viewRoute
         self.viewInitData = viewInitData
+        self.title = title
         self.viewMaker = viewMaker
     }
 }
