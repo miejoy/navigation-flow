@@ -24,7 +24,7 @@ public class NavigationManager {
         self.mapSharedStacks = [:]
     }
     
-    public func shared(on sceneId: SceneId) -> NavigationManager {
+    public static func shared(on sceneId: SceneId) -> NavigationManager {
         Store<SceneState>.shared(on: .main).storage[NavigationManagerKey.self]
     }
     
