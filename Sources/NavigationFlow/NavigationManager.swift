@@ -24,6 +24,10 @@ public class NavigationManager {
         self.mapSharedStacks = [:]
     }
     
+    public func shared(on sceneId: SceneId) -> NavigationManager {
+        Store<SceneState>.shared(on: .main).storage[NavigationManagerKey.self]
+    }
+    
     func sharedNavStack(of navStackId: SharedNavigationStackId) -> Store<NavigationState>? {
         guard let container = mapSharedStacks[navStackId.stackId] else {
             return nil
