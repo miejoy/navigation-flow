@@ -46,6 +46,8 @@ public class NavigationManager {
                     NavigationMonitor.shared.fatalError("Add shared navigation stack[\(navStack)] with stackId[\(sharedStackId)] failed! Exist other stack[\(oldStack)]")
                 }
             }
+            
+            mapSharedStacks[sharedStackId.stackId] = .init(navStack: navStack)
             navStack.setDestroyCallback { [weak self] _ in
                 self?.mapSharedStacks.removeValue(forKey: sharedStackId.stackId)
             }
