@@ -30,5 +30,5 @@ public struct SharedNavigationStackId: NavigationStackId {
 }
 
 extension SharedNavigationStackId {
-    static var main = SharedNavigationStackId(stackId: "Main")
+    public static var main = SharedNavigationStackId(stackId: "Main")
 }
