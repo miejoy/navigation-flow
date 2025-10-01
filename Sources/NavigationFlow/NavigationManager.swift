@@ -9,6 +9,7 @@ import DataFlow
 import ViewFlow
 import SwiftUI
 
+/// 导航管理器，主要获取共享导航堆栈，会保存在 AppState
 public class NavigationManager {
     
     /// 导航堆栈容器，这里只是弱引用方式包装堆栈，堆栈实际持有者为 NavigationStackFlow 的 StateObject
@@ -24,10 +25,17 @@ public class NavigationManager {
         self.mapSharedStacks = [:]
     }
     
-    public static func shared(on sceneId: SceneId) -> NavigationManager {
-        Store<SceneState>.shared(on: .main).storage[NavigationManagerKey.self]
+    /// 获取对应 scene 的导航管理器，暂时不对外公开，可以使用 @Environment(\.navManager) 获取
+    static func shared(on sceneId: SceneId) -> NavigationManager {
+        Store<SceneState>.shared(on: sceneId).storage[NavigationManagerKey.self]
     }
     
+    /// 获取对应 scene 中指定的共享导航堆栈，可能返回 nil
+    public static func sharedNavStack(on sceneId: SceneId, of navStackId: SharedNavigationStackId) -> Store<NavigationState>? {
+        return shared(on: sceneId).sharedNavStack(of: navStackId)
+    }
+    
+    /// 获取当前导航管理器中指定的共享导航堆栈，可能返回 nil
     public func sharedNavStack(of navStackId: SharedNavigationStackId) -> Store<NavigationState>? {
         guard let container = mapSharedStacks[navStackId.stackId] else {
             return nil

@@ -16,7 +16,6 @@ public struct NavigationStackFlow<Content: View>: View {
     @Environment(\.sceneId) var sceneId
     @Environment(\.viewPath) var viewPath
     @Environment(\.navManager) var navManager
-    @Environment(\.navStack) var prevNavStack
         
     @ViewBuilder var content: Content
     
@@ -36,19 +35,16 @@ public struct NavigationStackFlow<Content: View>: View {
     }
     
     public var body: some View {
-        print("update")
-        return NavigationView {
+        NavigationView {
             NavigationStack(path: $navStack.arrPaths) {
                 content
                     .navigationDestination(for: NavigationPage.self) { page in
                         navStack.makePushView(of: page, on: sceneId)
+                            .environment(\.navStack, navStack)
                     }
             }
             .environment(\.navStack, navStack)
             .onAppear {
-                if let prevNavStack = prevNavStack {
-                    NavigationMonitor.shared.fatalError("NavigationStack[\(navStack.stackId)] nested in NavigationStack[\(prevNavStack.stackId)]. This is not supported by now")
-                }
                 navManager.addNavStack(navStack, at: viewPath)
                 // 暂时不需要 remove
             }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// 内部使用的， Push 之后的 View 的制造器，用于包装制作可推入界面的过程
 struct PushedViewMaker {
     
     let check: (Any) -> Any?

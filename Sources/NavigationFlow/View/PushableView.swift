@@ -12,5 +12,6 @@ import SwiftUI
 public protocol PushableView: RoutableView {
 }
 
+/// 可用于 Push 的无初始化参数界面
 public protocol VoidPushableView: PushableView, VoidInitializableView {
 }

@@ -8,6 +8,7 @@
 import DataFlow
 import ViewFlow
 
+/// 导航处理事件
 public struct NavigationAction: Action {
     
     enum InnerRouteOf {

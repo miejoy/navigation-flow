@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// 展示修改器
+/// 导航堆栈修改器
 public struct NavigationStackModifier: ViewModifier {
     var stackId: NavigationStackId
     

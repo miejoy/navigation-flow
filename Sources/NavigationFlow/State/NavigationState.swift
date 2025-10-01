@@ -10,6 +10,7 @@ import DataFlow
 import ViewFlow
 import SwiftUI
 
+/// 导航状态
 public struct NavigationState: FullStorableViewState {
     
     public typealias BindAction = NavigationAction
@@ -25,62 +26,9 @@ public struct NavigationState: FullStorableViewState {
         store.registerDefault { state, action in
             switch action.action {
             case .push(let pushAction):
-                var navPage = pushAction.page
-                if pushAction.page.viewMaker == nil &&
-                    !NavigationCenter.shared.canMakeView(of: &navPage) {
-                    NavigationMonitor.shared.record(event: .pushFailedNotRegister(pushAction.page.viewRoute))
-                    return
-                }
-                
-                if let baseOn = pushAction.baseOnRoute {
-                    switch baseOn {
-                    case .root:
-                        state.arrPaths.removeAll()
-                    case .route(let viewRoute):
-                        let index = state.arrPaths.lastIndex { page in
-                            viewRoute == page.viewRoute
-                        }
-                        guard let index = index else {
-                            // 没有找到，需要记录
-                            NavigationMonitor.shared.record(event: .pushFailedBaseOnRouteNotFound(viewRoute))
-                            return
-                        }
-                        let nextIndex = state.arrPaths.index(after: index)
-                        if nextIndex != state.arrPaths.endIndex {
-                            state.arrPaths.removeSubrange(nextIndex...)
-                        }
-                    }
-                }
-                state.arrPaths.append(navPage)
+                state.pushWith(pushAction: pushAction)
             case .pop(let popAction):
-                if let baseOn = popAction.targetRoute {
-                    switch baseOn {
-                    case .root:
-                        state.arrPaths.removeAll()
-                        return
-                    case .route(let viewRoute):
-                        let index = state.arrPaths.lastIndex { page in
-                            viewRoute == page.viewRoute
-                        }
-                        guard let index = index else {
-                            // 没有找到，需要记录
-                            NavigationMonitor.shared.record(event: .popFailedTargetRouteNotFound(viewRoute))
-                            return
-                        }
-                        let nextIndex = state.arrPaths.index(after: index)
-                        if nextIndex != state.arrPaths.endIndex {
-                            state.arrPaths.removeSubrange(nextIndex...)
-                        }
-                    }
-                }
-                if popAction.popCount > 0 {
-                    if popAction.popCount <= state.arrPaths.count {
-                        state.arrPaths.removeLast(Int(popAction.popCount))
-                    } else {
-                        NavigationMonitor.shared.fatalError("Pop \(popAction.popCount) view while \(state.arrPaths.count) exist")
-                        state.arrPaths.removeAll()
-                    }
-                }
+                state.popWith(popAction: popAction)
             case .remove(let viewRoute):
                 let index = state.arrPaths.lastIndex { page in
                     viewRoute == page.viewRoute
@@ -94,9 +42,72 @@ public struct NavigationState: FullStorableViewState {
             }
         }
     }
+    
+    /// 统一处理推出界面方法
+    mutating func pushWith(pushAction: NavigationAction.InnerPushAction) {
+        var navPage = pushAction.page
+        if pushAction.page.viewMaker == nil &&
+            !NavigationCenter.shared.canMakeView(of: &navPage) {
+            NavigationMonitor.shared.record(event: .pushFailedNotRegister(pushAction.page.viewRoute))
+            return
+        }
+        
+        if let baseOn = pushAction.baseOnRoute {
+            switch baseOn {
+            case .root:
+                arrPaths.removeAll()
+            case .route(let viewRoute):
+                let index = arrPaths.lastIndex { page in
+                    viewRoute == page.viewRoute
+                }
+                guard let index = index else {
+                    // 没有找到，需要记录
+                    NavigationMonitor.shared.record(event: .pushFailedBaseOnRouteNotFound(viewRoute))
+                    return
+                }
+                let nextIndex = arrPaths.index(after: index)
+                if nextIndex != arrPaths.endIndex {
+                    arrPaths.removeSubrange(nextIndex...)
+                }
+            }
+        }
+        arrPaths.append(navPage)
+    }
+    
+    /// 统一处理退出界面方法
+    mutating func popWith(popAction: NavigationAction.InnerPopAction) {
+        if let baseOn = popAction.targetRoute {
+            switch baseOn {
+            case .root:
+                arrPaths.removeAll()
+                return
+            case .route(let viewRoute):
+                let index = arrPaths.lastIndex { page in
+                    viewRoute == page.viewRoute
+                }
+                guard let index = index else {
+                    // 没有找到，需要记录
+                    NavigationMonitor.shared.record(event: .popFailedTargetRouteNotFound(viewRoute))
+                    return
+                }
+                let nextIndex = arrPaths.index(after: index)
+                if nextIndex != arrPaths.endIndex {
+                    arrPaths.removeSubrange(nextIndex...)
+                }
+            }
+        }
+        if popAction.popCount > 0 {
+            if popAction.popCount <= arrPaths.count {
+                arrPaths.removeLast(Int(popAction.popCount))
+            } else {
+                NavigationMonitor.shared.fatalError("Pop \(popAction.popCount) view while \(arrPaths.count) exist")
+                arrPaths.removeAll()
+            }
+        }
+    }
 }
 
-/// 导航中的一页数据
+/// 导航中的一页数据（内部使用）
 struct NavigationPage: Hashable {
     static func == (lhs: NavigationPage, rhs: NavigationPage) -> Bool {
         lhs.pageUUID == rhs.pageUUID
