@@ -19,18 +19,21 @@ public struct NavigationStackFlow<Content: View>: View {
         
     @ViewBuilder var content: Content
     
+    @inlinable
     public init(@ViewBuilder content: () -> Content) {
-        self._navStack = .init(wrappedValue: .box(.init(NormalNavigationStackId(stackId: UUID().uuidString))))
-        self.content = content()
+        self.init(NormalNavigationStackId(), content: content)
     }
     
-    public init(_ navStackId: NavigationStackId, @ViewBuilder content: () -> Content) {
-        self._navStack = .init(wrappedValue: .box(.init(navStackId)))
-        self.content = content()
+    public init(_ navStackId: NormalNavigationStackId, @ViewBuilder content: () -> Content) {
+        self.init(stackId: navStackId, content: content)
     }
     
     public init(shared navStackId: SharedNavigationStackId, @ViewBuilder content: () -> Content) {
-        self._navStack = .init(wrappedValue: .box(.init(navStackId)))
+        self.init(stackId: navStackId, content: content)
+    }
+    
+    init(stackId: NavigationStackId, @ViewBuilder content: () -> Content) {
+        self._navStack = .init(wrappedValue: .box(.init(stackId)))
         self.content = content()
     }
     

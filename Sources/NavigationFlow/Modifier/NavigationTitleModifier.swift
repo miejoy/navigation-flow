@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// 展示修改器
+/// 导航标题修改器
 public struct NavigationTitleModifier: ViewModifier {
     @Environment(\.suggestNavTitle) var suggestNavTitle
     var navTitle: String? = nil

@@ -12,7 +12,6 @@ import SwiftUI
 
 /// 导航状态
 public struct NavigationState: FullStorableViewState {
-    
     public typealias BindAction = NavigationAction
     
     var stackId: NavigationStackId
@@ -100,7 +99,7 @@ public struct NavigationState: FullStorableViewState {
             if popAction.popCount <= arrPaths.count {
                 arrPaths.removeLast(Int(popAction.popCount))
             } else {
-                NavigationMonitor.shared.fatalError("Pop \(popAction.popCount) view while \(arrPaths.count) exist")
+                NavigationMonitor.shared.fatalError("Pop \(popAction.popCount) view while \(arrPaths.count) views exist")
                 arrPaths.removeAll()
             }
         }
@@ -115,6 +114,8 @@ struct NavigationPage: Hashable {
     
     let pageUUID: UUID = UUID()
     let title: String?
+    // 这里为什么不直接保存 ViewRouteData，
+    // 主要由于有些场景无法构造出来，比如传入的是 View 实例，那就只能用 viewMake 构造了
     let viewRoute: AnyViewRoute
     var viewInitData: Any
     // 界面构造器，如果有，优先使用这个
@@ -132,9 +133,10 @@ struct NavigationPage: Hashable {
         self.viewMaker = viewMaker
     }
     
-    init(viewRoute: AnyViewRoute, viewInitData: Any, title: String? = nil, viewMaker: PushedViewMaker? = nil) {
+    /// 使用 AnyViewRoute 和 data 初始化是不可靠的，所以这里必须提供 viewMake，AnyViewRoute 只作为路由标记
+    init(viewRoute: AnyViewRoute, title: String? = nil, viewMaker: PushedViewMaker) {
         self.viewRoute = viewRoute
-        self.viewInitData = viewInitData
+        self.viewInitData = ()
         self.title = title
         self.viewMaker = viewMaker
     }

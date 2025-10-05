@@ -10,7 +10,6 @@ import ViewFlow
 
 /// 导航处理事件
 public struct NavigationAction: Action {
-    
     enum InnerRouteOf {
         case root
         case route(AnyViewRoute)
@@ -84,7 +83,6 @@ extension NavigationAction {
                 .init(
                     page: .init(
                         viewRoute: P.defaultRoute.eraseToAnyRoute(),
-                        viewInitData: (),
                         title: title,
                         viewMaker: .init(view)
                     ),
@@ -286,58 +284,6 @@ extension NavigationAction {
             action: .push(
                 .init(
                     page: .init(viewRootData, title: title),
-                    baseOnRoute: baseOn
-                )
-            )
-        )
-    }
-    
-    // MARK: -Push With AnyRoute
-    
-    /// 推入展示对应路由的界面
-    ///
-    /// - Parameter route: 需要展示界面的路由
-    /// - Parameter initData: 需要展示界面初始化所需要的数据
-    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
-    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
-    /// - Returns Self: 返回构造好的自己
-    public static func push(
-        _ route: AnyViewRoute,
-        _ data: Any = Void(),
-        _ title: String? = nil,
-        baseOn: AnyViewRoute? = nil
-    ) -> Self {
-        var routeOf: InnerRouteOf? = nil
-        if let baseOn = baseOn {
-            routeOf = .route(baseOn)
-        }
-        return push(route, data, title, routeOf)
-    }
-    
-    /// 从跟视图推入展示对应路由的界面
-    ///
-    /// - Parameter route: 需要展示界面的路由
-    /// - Parameter initData: 需要展示界面初始化所需要的数据
-    /// - Parameter title: 展示界面的导航标题，这里只是建议标题
-    /// - Returns Self: 返回构造好的自己
-    public static func pushOnRoot(
-        _ route: AnyViewRoute,
-        _ data: Any = Void(),
-        _ title: String? = nil
-    ) -> Self {
-        push(route, data, title, .root)
-    }
-    
-    static func push(
-        _ route: AnyViewRoute,
-        _ data: Any = Void(),
-        _ title: String? = nil,
-        _ baseOn: InnerRouteOf? = nil
-    ) -> Self {
-        .init(
-            action: .push(
-                .init(
-                    page: .init(viewRoute: route, viewInitData: data, title: title),
                     baseOnRoute: baseOn
                 )
             )

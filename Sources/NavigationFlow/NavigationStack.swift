@@ -210,37 +210,53 @@ extension Store where State == NavigationState {
     // MARK: -Push With AnyRoute
     
     /// 推入展示对应路由的界面
+    /// 注意: 这种方式有可能失败，建议自行构造 ViewRouteData，然后使用上面方法代替。此方法后期可能删除
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
     /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Returns: 返回是否推入成功
     @inlinable
+    @discardableResult
     public func push(
         _ route: AnyViewRoute,
         _ data: Any = Void(),
         baseOn: AnyViewRoute? = nil
-    ) {
+    ) -> Bool {
+        guard let viewRouteData = route.wrapper(data) else {
+            NavigationMonitor.shared.fatalError("Push view [\(route)] failed! Cann't make viewRouteData with data [\(data)]")
+            return false
+        }
         if baseOn == nil {
-            self.send(action: .push(route, data, baseOn: baseOn))
+            self.send(action: .push(viewRouteData, baseOn: baseOn))
         } else {
             withAnimation {
-                self.send(action: .push(route, data, baseOn: baseOn))
+                self.send(action: .push(viewRouteData, baseOn: baseOn))
             }
         }
+        return true
     }
     
     /// 从跟视图推入展示对应路由的界面
+    /// 注意: 这种方式有可能失败，建议自行构造 ViewRouteData，然后使用上面方法代替。此方法后期可能删除
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
+    /// - Returns: 返回是否推入成功
     @inlinable
+    @discardableResult
     public func pushOnRoot(
         _ route: AnyViewRoute,
         _ data: Any = Void()
-    ) {
-        withAnimation {
-            self.send(action: .pushOnRoot(route, data))
+    ) -> Bool {
+        guard let viewRouteData = route.wrapper(data) else {
+            NavigationMonitor.shared.fatalError("Push view [\(route)] failed! Cann't make viewRouteData with data [\(data)]")
+            return false
         }
+        withAnimation {
+            self.send(action: .pushOnRoot(viewRouteData))
+        }
+        return true
     }
     
     // MARK: - Pop
@@ -271,9 +287,9 @@ extension Store where State == NavigationState {
     ///
     /// - Parameter route: 需要移除界面对应的路由
     @inlinable
-    public func remove(with route: AnyViewRoute) {
+    public func remove<InitData>(with route: ViewRoute<InitData>) {
         withAnimation {
-            self.send(action: .remove(with: route))
+            self.send(action: .remove(with: route.eraseToAnyRoute()))
         }
     }
     
@@ -282,12 +298,12 @@ extension Store where State == NavigationState {
     ///
     /// - Parameter route: 需要移除界面对应的路由
     @inlinable
-    public func remove<InitData>(with route: ViewRoute<InitData>) {
+    public func remove(with route: AnyViewRoute) {
         withAnimation {
-            self.send(action: .remove(with: route.eraseToAnyRoute()))
+            self.send(action: .remove(with: route))
         }
     }
-    
+        
     // MARK: - Make View
     
     func makePushView(of page: NavigationPage, on sceneId: SceneId) -> some View {

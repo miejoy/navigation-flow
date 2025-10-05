@@ -11,7 +11,6 @@ import SwiftUI
 
 /// 导航管理器，主要获取共享导航堆栈，会保存在 AppState
 public class NavigationManager {
-    
     /// 导航堆栈容器，这里只是弱引用方式包装堆栈，堆栈实际持有者为 NavigationStackFlow 的 StateObject
     struct NavigationStackContainer {
         weak var navStack: Store<NavigationState>?
@@ -44,6 +43,7 @@ public class NavigationManager {
         return container.navStack
     }
     
+    /// 添加并保存共享导航堆栈，非共享导航堆栈将被忽略
     func addNavStack(_ navStack: Store<NavigationState>, at viewPath: ViewPath) {
         if let sharedStackId = navStack.stackId as? SharedNavigationStackId {
             if let oldContainer = mapSharedStacks[sharedStackId.stackId] {
@@ -55,6 +55,7 @@ public class NavigationManager {
                 }
             }
             
+            // 这里用弱引用保存
             mapSharedStacks[sharedStackId.stackId] = .init(navStack: navStack)
             navStack.setDestroyCallback { [weak self] _ in
                 self?.mapSharedStacks.removeValue(forKey: sharedStackId.stackId)

@@ -11,7 +11,6 @@ import ViewFlow
 
 /// 导航中心，主要用于注册可 Push 界面，独立存储，不会保存在 AppState
 public final class NavigationCenter {
-    
     public static let shared: NavigationCenter = .init()
     
     var registerMap: [AnyViewRoute: PushedViewMaker] = [:]
@@ -23,30 +22,11 @@ public final class NavigationCenter {
         registerPushableView(V.self, for: route)
     }
     
-    /// 使用默认路由注册对应展示界面
-    @inlinable
-    public func registerDefaultPushableView<V: PushableView>(_ presentableViewType: V.Type) where V.InitData == Void {
-        let route = V.defaultRoute
-        registerPushableView(V.self, for: route)
-    }
-    
     /// 注册对应展示界面
     public func registerPushableView<V: PushableView>(
         _ presentableViewType: V.Type,
         for route: ViewRoute<V.InitData>
     ) {
-        let key = route.eraseToAnyRoute()
-        if registerMap[key] != nil {
-            NavigationMonitor.shared.fatalError("Duplicate registration of PushableView '\(key)'")
-        }
-        registerMap[key] = .init(V.self)
-    }
-    
-    /// 注册对应展示界面
-    public func registerPushableView<V: PushableView>(
-        _ presentableViewType: V.Type,
-        for route: ViewRoute<V.InitData>
-    ) where V.InitData == Void {
         let key = route.eraseToAnyRoute()
         if registerMap[key] != nil {
             NavigationMonitor.shared.fatalError("Duplicate registration of PushableView '\(key)'")

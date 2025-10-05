@@ -18,12 +18,19 @@ public extension NavigationStackId {
     }
 }
 
-/// 普通导航堆栈ID
-struct NormalNavigationStackId: NavigationStackId {
-    var stackId: String
+/// 普通导航堆栈ID，这种都是临时使用的，如果希望在多个界面调用，需要用 SharedNavigationStackId
+public struct NormalNavigationStackId: NavigationStackId, ExpressibleByStringLiteral {
+    public var stackId: String
+    public init(stackId: String = UUID().uuidString) {
+        self.stackId = stackId
+    }
+    
+    public init(stringLiteral value: String) {
+        self.stackId = value
+    }
 }
 
-/// 共享导航堆栈ID
+/// 共享导航堆栈ID，通过这个ID获取的导航堆栈是共享的
 public struct SharedNavigationStackId: NavigationStackId {
     public var stackId: String
     public init(stackId: String) {

@@ -33,6 +33,10 @@ let package = Package(
         ),
         .testTarget(
             name: "NavigationFlowTests",
-            dependencies: ["NavigationFlow"]),
+            dependencies: [
+                "NavigationFlow",
+                .product(name: "XCTViewFlow", package: "view-flow")
+            ]
+        ),
     ]
 )
