@@ -17,9 +17,10 @@ import XCTViewFlow
 struct NavigationStackFlowTests {
     static let register: Void = {
         NavigationCenter.shared.registerPushableView(NormalView.self, for: NormalView.defaultRoute)
-        NavigationCenter.shared.registerDefaultPushableView(FirstPushView.self)
-        NavigationCenter.shared.registerDefaultPushableView(SecondPushView.self)
-        NavigationCenter.shared.registerDefaultPushableView(ThirdPushView.self)
+        NavigationCenter.shared.registerDefaultPushableView(PushFirstView.self)
+        NavigationCenter.shared.registerDefaultPushableView(PushSecondView.self)
+        NavigationCenter.shared.registerDefaultPushableView(PushThirdView.self)
+        NavigationCenter.shared.registerPushableView(PushFourthView.self, for: PushFourthView.defaultRoute)
     }()
     
     init() {
@@ -115,18 +116,18 @@ struct NavigationStackFlowTests {
         
         #expect(shareNavStack != nil)
         if let shareNavStack = shareNavStack {
-            FirstPushView.s_navStack = nil
-            shareNavStack.push(FirstPushView.self)
+            PushFirstView.s_navStack = nil
+            shareNavStack.push(PushFirstView.self)
             ViewTest.refreshHost(host)
             
-            #expect(FirstPushView.s_navStack != nil)
-            if let navStack = FirstPushView.s_navStack {
+            #expect(PushFirstView.s_navStack != nil)
+            if let navStack = PushFirstView.s_navStack {
                 #expect(navStack === shareNavStack)
             }
             
             #expect(shareNavStack.arrPaths.count == 1)
             if shareNavStack.arrPaths.count == 1 {
-                #expect(shareNavStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
+                #expect(shareNavStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
             }
         }
 
@@ -146,15 +147,15 @@ struct NavigationStackFlowTests {
         
         #expect(shareNavStack != nil)
         if let shareNavStack = shareNavStack {
-            shareNavStack.push(FirstPushView.self)
+            shareNavStack.push(PushFirstView.self)
             ViewTest.refreshHost(host)
             #expect(shareNavStack.arrPaths.count == 1)
             
-            shareNavStack.push(SecondPushView.defaultRoute)
+            shareNavStack.push(PushSecondView.defaultRoute)
             ViewTest.refreshHost(host)
             #expect(shareNavStack.arrPaths.count == 2)
             
-            shareNavStack.push(ThirdPushView.defaultRoute.eraseToAnyRoute())
+            shareNavStack.push(PushThirdView.defaultRoute.eraseToAnyRoute(), "")
             ViewTest.refreshHost(host)
             #expect(shareNavStack.arrPaths.count == 3)
             
@@ -174,9 +175,12 @@ struct NavigationStackFlowTests {
 
 extension ViewRoute where InitData == Void {
     static let normalRoute: ViewRoute<Void> = NormalView.defaultRoute
-    static let firstRoute: ViewRoute<Void> = FirstPushView.defaultRoute
-    static let secondRoute: ViewRoute<Void> = SecondPushView.defaultRoute
-    static let thirdRoute: ViewRoute<Void> = ThirdPushView.defaultRoute
+    static let firstRoute: ViewRoute<Void> = PushFirstView.defaultRoute
+    static let secondRoute: ViewRoute<Void> = PushSecondView.defaultRoute
+}
+
+extension ViewRoute where InitData == String {
+    static let thirdRoute: ViewRoute<String> = PushThirdView.defaultRoute
 }
 
 struct NormalView: VoidPushableView {
@@ -191,7 +195,7 @@ struct NormalView: VoidPushableView {
     }
 }
 
-struct FirstPushView: VoidPushableView {
+struct PushFirstView: VoidPushableView {
     static var s_navStack: Store<NavigationState>? = nil
     @Environment(\.navStack) var navStack
     var content: some View {
@@ -202,14 +206,34 @@ struct FirstPushView: VoidPushableView {
     }
 }
 
-struct SecondPushView: VoidPushableView {
+struct PushSecondView: VoidPushableView {
+    static var s_navStack: Store<NavigationState>? = nil
+    @Environment(\.navStack) var navStack
+    var content: some View {
+        Text("")
+            .onAppear {
+            Self.s_navStack = navStack
+        }
+    }
+}
+
+struct PushThirdView: PushableView {
+    let data: String
+    init(_ data: String) {
+        self.data = data
+    }
     var content: some View {
         Text("")
     }
 }
 
-struct ThirdPushView: VoidPushableView {
+struct PushFourthView: PushableView {
+    let data: Int
+    init(_ data: Int) {
+        self.data = data
+    }
     var content: some View {
         Text("")
     }
 }
+

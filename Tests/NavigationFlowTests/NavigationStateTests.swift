@@ -54,21 +54,21 @@ struct NavigationStateTests {
             #expect(navStack.state.arrPaths[0].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
         }
         
-        navStack.push(FirstPushView.self, ())
+        navStack.push(PushFirstView.self, ())
         #expect(navStack.state.arrPaths.count == 2)
         
-        navStack.push(SecondPushView.self, baseOn: NormalView.defaultRoute.eraseToAnyRoute())
+        navStack.push(PushSecondView.self, baseOn: NormalView.defaultRoute.eraseToAnyRoute())
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
             #expect(navStack.state.arrPaths[0].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
         }
         
-        navStack.push(ThirdPushView.self, (), baseOn: NormalView.defaultRoute.eraseToAnyRoute())
+        navStack.push(PushThirdView.self, "", baseOn: NormalView.defaultRoute.eraseToAnyRoute())
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
             #expect(navStack.state.arrPaths[0].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -92,14 +92,14 @@ struct NavigationStateTests {
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
             #expect(navStack.state.arrPaths[0].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
         }
         
-        navStack.push(.thirdRoute, (), baseOn: NormalView.defaultRoute.eraseToAnyRoute())
+        navStack.push(.thirdRoute, "", baseOn: NormalView.defaultRoute.eraseToAnyRoute())
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
             #expect(navStack.state.arrPaths[0].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -124,15 +124,15 @@ struct NavigationStateTests {
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
             #expect(navStack.state.arrPaths[0].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
         }
         
-        let thirdAnyRoute = ViewRoute<Void>.thirdRoute.eraseToAnyRoute()
-        navStack.push(thirdAnyRoute, (), baseOn: NormalView.defaultRoute.eraseToAnyRoute())
+        let thirdAnyRoute = ViewRoute<String>.thirdRoute.eraseToAnyRoute()
+        navStack.push(thirdAnyRoute, "", baseOn: NormalView.defaultRoute.eraseToAnyRoute())
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
             #expect(navStack.state.arrPaths[0].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -155,7 +155,7 @@ struct NavigationStateTests {
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
             #expect(navStack.state.arrPaths[0].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -164,16 +164,16 @@ struct NavigationStateTests {
         let navStack = NavigationState.makeNormalNavStack()
         
         #expect(navStack.state.arrPaths.isEmpty)
-        navStack.push(FirstPushView())
+        navStack.push(PushFirstView())
         #expect(navStack.state.arrPaths.count == 1)
-        navStack.push(SecondPushView())
+        navStack.push(PushSecondView())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.push(ThirdPushView())
+        navStack.push(PushThirdView(""))
         #expect(navStack.state.arrPaths.count == 3)
         if navStack.state.arrPaths.count == 0 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[2].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[2].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
         
         // View
@@ -186,13 +186,13 @@ struct NavigationStateTests {
         // View Type
         navStack.push(NormalView.self)
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.pushOnRoot(FirstPushView.self)
+        navStack.pushOnRoot(PushFirstView.self)
         #expect(navStack.state.arrPaths.count == 1)
         if navStack.state.arrPaths.count > 0 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
         }
         
-        navStack.push(FirstPushView.self)
+        navStack.push(PushFirstView.self)
         #expect(navStack.state.arrPaths.count == 2)
         navStack.pushOnRoot(NormalView.self, ())
         #expect(navStack.state.arrPaths.count == 1)
@@ -203,13 +203,13 @@ struct NavigationStateTests {
         // View Route
         navStack.push(NormalView.defaultRoute)
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.pushOnRoot(SecondPushView.defaultRoute)
+        navStack.pushOnRoot(PushSecondView.defaultRoute)
         #expect(navStack.state.arrPaths.count == 1)
         if navStack.state.arrPaths.count > 0 {
-            #expect(navStack.state.arrPaths[0].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
         }
         
-        navStack.push(SecondPushView.defaultRoute)
+        navStack.push(PushSecondView.defaultRoute)
         #expect(navStack.state.arrPaths.count == 2)
         navStack.pushOnRoot(NormalView.defaultRoute, ())
         #expect(navStack.state.arrPaths.count == 1)
@@ -220,13 +220,13 @@ struct NavigationStateTests {
         // Any View Route
         navStack.push(NormalView.defaultRoute.eraseToAnyRoute())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.pushOnRoot(ThirdPushView.defaultRoute.eraseToAnyRoute())
+        navStack.pushOnRoot(PushThirdView.defaultRoute.eraseToAnyRoute(), "")
         #expect(navStack.state.arrPaths.count == 1)
         if navStack.state.arrPaths.count > 0 {
-            #expect(navStack.state.arrPaths[0].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
         
-        navStack.push(ThirdPushView.defaultRoute.eraseToAnyRoute())
+        navStack.push(PushThirdView.defaultRoute.eraseToAnyRoute(), "")
         #expect(navStack.state.arrPaths.count == 2)
         navStack.pushOnRoot(NormalView.defaultRoute.eraseToAnyRoute(), ())
         #expect(navStack.state.arrPaths.count == 1)
@@ -240,7 +240,7 @@ struct NavigationStateTests {
         navStack.pushOnRoot(ViewRoute<Void>.firstRoute.wrapper(()))
         #expect(navStack.state.arrPaths.count == 1)
         if navStack.state.arrPaths.count > 0 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -249,17 +249,17 @@ struct NavigationStateTests {
         let navStack = NavigationState.makeNormalNavStack()
         
         #expect(navStack.state.arrPaths.isEmpty)
-        navStack.push(FirstPushView())
+        navStack.push(PushFirstView())
         #expect(navStack.state.arrPaths.count == 1)
-        navStack.push(SecondPushView())
+        navStack.push(PushSecondView())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.push(ThirdPushView())
+        navStack.push(PushThirdView(""))
         #expect(navStack.state.arrPaths.count == 3)
         
-        navStack.push(NormalView(), baseOn: FirstPushView.defaultRoute.eraseToAnyRoute())
+        navStack.push(NormalView(), baseOn: PushFirstView.defaultRoute.eraseToAnyRoute())
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
             #expect(navStack.state.arrPaths[1].viewRoute == NormalView.defaultRoute.eraseToAnyRoute())
         }
     }
@@ -271,23 +271,23 @@ struct NavigationStateTests {
         let navStack = NavigationState.makeNormalNavStack()
         
         #expect(navStack.state.arrPaths.isEmpty)
-        navStack.push(FirstPushView())
+        navStack.push(PushFirstView())
         #expect(navStack.state.arrPaths.count == 1)
-        navStack.push(SecondPushView())
+        navStack.push(PushSecondView())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.push(ThirdPushView())
+        navStack.push(PushThirdView(""))
         #expect(navStack.state.arrPaths.count == 3)
         if navStack.state.arrPaths.count == 3 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[2].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[2].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
         
         navStack.pop()
         #expect(navStack.state.arrPaths.count == 2)
         if navStack.state.arrPaths.count == 2 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -296,22 +296,22 @@ struct NavigationStateTests {
         let navStack = NavigationState.makeNormalNavStack()
         
         #expect(navStack.state.arrPaths.isEmpty)
-        navStack.push(FirstPushView())
+        navStack.push(PushFirstView())
         #expect(navStack.state.arrPaths.count == 1)
-        navStack.push(SecondPushView())
+        navStack.push(PushSecondView())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.push(ThirdPushView())
+        navStack.push(PushThirdView(""))
         #expect(navStack.state.arrPaths.count == 3)
         if navStack.state.arrPaths.count == 3 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[2].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[2].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
         
         navStack.pop(2)
         #expect(navStack.state.arrPaths.count == 1)
         if navStack.state.arrPaths.count == 1 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -320,22 +320,22 @@ struct NavigationStateTests {
         let navStack = NavigationState.makeNormalNavStack()
         
         #expect(navStack.state.arrPaths.isEmpty)
-        navStack.push(FirstPushView())
+        navStack.push(PushFirstView())
         #expect(navStack.state.arrPaths.count == 1)
-        navStack.push(SecondPushView())
+        navStack.push(PushSecondView())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.push(ThirdPushView())
+        navStack.push(PushThirdView(""))
         #expect(navStack.state.arrPaths.count == 3)
         if navStack.state.arrPaths.count == 3 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[2].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[2].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
         
-        navStack.pop(1, from: SecondPushView.defaultRoute.eraseToAnyRoute())
+        navStack.pop(1, from: PushSecondView.defaultRoute.eraseToAnyRoute())
         #expect(navStack.state.arrPaths.count == 1)
         if navStack.state.arrPaths.count == 1 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -344,16 +344,16 @@ struct NavigationStateTests {
         let navStack = NavigationState.makeNormalNavStack()
         
         #expect(navStack.state.arrPaths.isEmpty)
-        navStack.push(FirstPushView())
+        navStack.push(PushFirstView())
         #expect(navStack.state.arrPaths.count == 1)
-        navStack.push(SecondPushView())
+        navStack.push(PushSecondView())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.push(ThirdPushView())
+        navStack.push(PushThirdView(""))
         #expect(navStack.state.arrPaths.count == 3)
         if navStack.state.arrPaths.count == 3 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == SecondPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[2].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushSecondView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[2].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
         
         navStack.popToRoot()
@@ -367,17 +367,17 @@ struct NavigationStateTests {
         let navStack = NavigationState.makeNormalNavStack()
         
         #expect(navStack.state.arrPaths.isEmpty)
-        navStack.push(FirstPushView())
+        navStack.push(PushFirstView())
         #expect(navStack.state.arrPaths.count == 1)
-        navStack.push(SecondPushView())
+        navStack.push(PushSecondView())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.push(ThirdPushView())
+        navStack.push(PushThirdView(""))
         #expect(navStack.state.arrPaths.count == 3)
         
-        navStack.remove(with: SecondPushView.defaultRoute)
+        navStack.remove(with: PushSecondView.defaultRoute)
         if navStack.state.arrPaths.count == 2 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
     }
     
@@ -386,19 +386,19 @@ struct NavigationStateTests {
         let navStack = NavigationState.makeNormalNavStack()
         
         #expect(navStack.state.arrPaths.isEmpty)
-        navStack.push(FirstPushView())
+        navStack.push(PushFirstView())
         #expect(navStack.state.arrPaths.count == 1)
-        navStack.push(SecondPushView())
+        navStack.push(PushSecondView())
         #expect(navStack.state.arrPaths.count == 2)
-        navStack.push(ThirdPushView())
+        navStack.push(PushThirdView(""))
         #expect(navStack.state.arrPaths.count == 3)
-        navStack.push(SecondPushView())
+        navStack.push(PushFourthView(1))
         #expect(navStack.state.arrPaths.count == 4)
         
-        navStack.remove(with: SecondPushView.defaultRoute.eraseToAnyRoute())
+        navStack.remove(with: PushSecondView.defaultRoute.eraseToAnyRoute())
         if navStack.state.arrPaths.count == 2 {
-            #expect(navStack.state.arrPaths[0].viewRoute == FirstPushView.defaultRoute.eraseToAnyRoute())
-            #expect(navStack.state.arrPaths[1].viewRoute == ThirdPushView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[0].viewRoute == PushFirstView.defaultRoute.eraseToAnyRoute())
+            #expect(navStack.state.arrPaths[1].viewRoute == PushThirdView.defaultRoute.eraseToAnyRoute())
         }
     }
 }

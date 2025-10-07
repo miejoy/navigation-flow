@@ -22,10 +22,11 @@ public struct NavigationState: FullStorableViewState {
     }
     
     public static func loadReducers(on store: Store<NavigationState>) {
-        store.registerDefault { state, action in
+        store.registerDefault { [weak store] state, action in
+            guard let store = store else { return }
             switch action.action {
             case .push(let pushAction):
-                state.pushWith(pushAction: pushAction)
+                state.pushWith(pushAction: pushAction, on: store.sceneId)
             case .pop(let popAction):
                 state.popWith(popAction: popAction)
             case .remove(let viewRoute):
@@ -43,10 +44,10 @@ public struct NavigationState: FullStorableViewState {
     }
     
     /// 统一处理推出界面方法
-    mutating func pushWith(pushAction: NavigationAction.InnerPushAction) {
+    mutating func pushWith(pushAction: NavigationAction.InnerPushAction, on sceneId: SceneId) {
         var navPage = pushAction.page
         if pushAction.page.viewMaker == nil &&
-            !NavigationCenter.shared.canMakeView(of: &navPage) {
+            !NavigationManager.shared(on: sceneId).canMakeView(of: &navPage) {
             NavigationMonitor.shared.record(event: .pushFailedNotRegister(pushAction.page.viewRoute))
             return
         }

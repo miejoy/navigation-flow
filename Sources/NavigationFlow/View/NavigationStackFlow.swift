@@ -11,7 +11,7 @@ import ViewFlow
 
 /// 导航栈包装界面
 public struct NavigationStackFlow<Content: View>: View {
-    @StateObject var navStack: Store<NavigationState>
+    @ViewState var navState: NavigationState
     
     @Environment(\.sceneId) var sceneId
     @Environment(\.viewPath) var viewPath
@@ -33,22 +33,22 @@ public struct NavigationStackFlow<Content: View>: View {
     }
     
     init(stackId: NavigationStackId, @ViewBuilder content: () -> Content) {
-        self._navStack = .init(wrappedValue: .box(.init(stackId)))
+        self._navState = .init(wrappedValue: .init(stackId))
         self.content = content()
     }
     
     public var body: some View {
         NavigationView {
-            NavigationStack(path: $navStack.arrPaths) {
+            NavigationStack(path: $navState.arrPaths) {
                 content
                     .navigationDestination(for: NavigationPage.self) { page in
-                        navStack.makePushView(of: page, on: sceneId)
-                            .environment(\.navStack, navStack)
+                        $navState.makePushView(of: page, on: sceneId)
+                            .environment(\.navStack, $navState)
                     }
             }
-            .environment(\.navStack, navStack)
+            .environment(\.navStack, $navState)
             .onAppear {
-                navManager.addNavStack(navStack, at: viewPath)
+                navManager.addNavStack($navState, at: viewPath)
                 // 暂时不需要 remove
             }
         }
