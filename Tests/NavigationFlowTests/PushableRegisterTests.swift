@@ -81,8 +81,12 @@ struct PushableRegisterTests {
             ViewTest.refreshHost(host)
             #expect(navStack.arrPaths.count == 3)
             #expect(PushFirstView.s_navStack != nil)
+            #if os(macOS)
+            #expect(PushSecondView.s_navStack == nil)
+            #else
             // 由于这个也在堆栈中，所以他也会刷新，这可能是 ViewTest 缺陷，正常应该不会出现
             #expect(PushSecondView.s_navStack != nil)
+            #endif
         }
         
         ViewTest.releaseHost(host)
