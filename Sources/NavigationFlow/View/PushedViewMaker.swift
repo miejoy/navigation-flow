@@ -11,7 +11,7 @@ import SwiftUI
 struct PushedViewMaker {
     
     let check: (Any) -> Any?
-    let run: (Any) -> AnyView
+    let run: @MainActor (Any) -> AnyView
     
     init<V: PushableView>(_ pushableView: V) {
         self.check = { _ in Void() }
@@ -46,6 +46,7 @@ struct PushedViewMaker {
         }
     }
     
+    @MainActor
     func makeView(_ data: Any) -> AnyView {
         return run(data)
     }

@@ -62,6 +62,7 @@ public final class NavigationCenter {
         return false
     }
     
+    @MainActor
     func makeView(of page: NavigationPage, for navStore: Store<NavigationState>, on sceneId: SceneId) -> AnyView {
         if let viewMaker = page.viewMaker {
             return AnyView(viewMaker.makeView(page.viewInitData).environment(\.suggestNavTitle, page.title))

@@ -306,6 +306,7 @@ extension Store where State == NavigationState {
         
     // MARK: - Make View
     
+    @MainActor
     func makePushView(of page: NavigationPage, on sceneId: SceneId) -> some View {
         NavigationManager.shared(on: sceneId).makeView(of: page, for: self, on: sceneId)
     }

@@ -125,6 +125,7 @@ public class NavigationManager {
         return NavigationCenter.shared.canMakeView(of: &page)
     }
     
+    @MainActor
     func makeView(of page: NavigationPage, for navStore: Store<NavigationState>, on sceneId: SceneId) -> AnyView {
         if let viewMaker = page.viewMaker {
             return AnyView(viewMaker.makeView(page.viewInitData).environment(\.suggestNavTitle, page.title))
