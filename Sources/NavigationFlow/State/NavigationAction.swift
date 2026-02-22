@@ -10,26 +10,26 @@ import ViewFlow
 
 /// 导航处理事件
 public struct NavigationAction: Action {
-    enum InnerRouteOf {
+    enum InnerRouteOf: Sendable {
         case root
         case route(AnyViewRoute)
     }
     
-    struct InnerPushAction {
+    struct InnerPushAction: Sendable {
         let page: NavigationPage
         
         var baseOnRoute: InnerRouteOf?
     }
     
     /// 消失相关事件
-    struct InnerPopAction {
+    struct InnerPopAction: Sendable {
         /// 依赖于 target 的销毁数，为 0  时即表示 target 变为最顶层
         let popCount: UInt
         let targetRoute: InnerRouteOf?
     }
     
     /// 内部事件
-    enum ContentAction {
+    enum ContentAction: Sendable {
         case push(InnerPushAction)
         case pop(InnerPopAction)
         case remove(AnyViewRoute)

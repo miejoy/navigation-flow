@@ -8,9 +8,10 @@
 import Foundation
 import Combine
 import ViewFlow
+import DataFlow
 
-/// 存储器变化事件
-public enum NavigationEvent {
+/// 导航相关事件
+public enum NavigationEvent: MonitorEvent, Sendable {
     case pushFailedNotRegister(AnyViewRoute)
     case pushFailedBaseOnRouteNotFound(AnyViewRoute)
     case popFailedTargetRouteNotFound(AnyViewRoute)
@@ -18,56 +19,27 @@ public enum NavigationEvent {
     case fatalError(String)
 }
 
-public protocol NavigationMonitorOberver: AnyObject {
+/// 导航监视器观察者
+public protocol NavigationMonitorObserver: MonitorObserver {
+    @MainActor
     func receiveNavigationEvent(_ event: NavigationEvent)
 }
 
-/// 存储器监听器
-public final class NavigationMonitor {
-        
-    struct Observer {
-        let observerId: Int
-        weak var observer: NavigationMonitorOberver?
-    }
-    
-    /// 监听器共享单例
-    public static var shared: NavigationMonitor = .init()
-    
-    /// 所有观察者
-    var arrObservers: [Observer] = []
-    var generateObserverId: Int = 0
-    
-    required init() {
-    }
-    
-    /// 添加观察者
-    public func addObserver(_ observer: NavigationMonitorOberver) -> AnyCancellable {
-        generateObserverId += 1
-        let observerId = generateObserverId
-        arrObservers.append(.init(observerId: generateObserverId, observer: observer))
-        return AnyCancellable { [weak self] in
-            if let index = self?.arrObservers.firstIndex(where: { $0.observerId == observerId}) {
-                self?.arrObservers.remove(at: index)
+/// 导航监视器
+public final class NavigationMonitor: BaseMonitor<NavigationEvent> {
+    public nonisolated(unsafe) static let shared: NavigationMonitor = {
+        NavigationMonitor { event, observer in
+            DispatchQueue.executeOnMain {
+                (observer as? NavigationMonitorObserver)?.receiveNavigationEvent(event)
             }
         }
+    }()
+
+    public func addObserver(_ observer: NavigationMonitorObserver) -> AnyCancellable {
+        super.addObserver(observer)
     }
-    
-    /// 记录对应事件，这里只负责将所有事件传递给观察者
-    @usableFromInline
-    func record(event: NavigationEvent) {
-        guard !arrObservers.isEmpty else { return }
-        arrObservers.forEach { $0.observer?.receiveNavigationEvent(event) }
-    }
-    
-    @usableFromInline
-    func fatalError(_ message: String) {
-        guard !arrObservers.isEmpty else {
-            #if DEBUG
-            Swift.fatalError(message)
-            #else
-            return
-            #endif
-        }
-        arrObservers.forEach { $0.observer?.receiveNavigationEvent(.fatalError(message)) }
+
+    public override func addObserver(_ observer: MonitorObserver) -> AnyCancellable {
+        Swift.fatalError("Only NavigationMonitorObserver can observer this monitor")
     }
 }

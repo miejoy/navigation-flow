@@ -10,6 +10,7 @@ import ViewFlow
 import SwiftUI
 
 /// 对应场景的导航管理器，主要获取共享导航堆栈，会保存在 AppState
+@MainActor
 public class NavigationManager {
     /// 导航堆栈容器，这里只是弱引用方式包装堆栈，堆栈实际持有者为 NavigationStackFlow 的 StateObject
     struct NavigationStackContainer {
@@ -27,7 +28,7 @@ public class NavigationManager {
     var registerMap: [AnyViewRoute: PushedViewMaker] = [:]
     var registerCallSet: Set<CallId> = []
     
-    init(sceneStore: Store<SceneState>?) {
+    nonisolated init(sceneStore: Store<SceneState>?) {
         self.sceneId = sceneStore?.sceneId ?? .main
         self.mapSharedStacks = [:]
     }
@@ -35,7 +36,7 @@ public class NavigationManager {
     // MARK: - Shared
     
     /// 获取对应 scene 的导航管理器，暂时不对外公开，可以使用 @Environment(\.navManager) 获取
-    static func shared(on sceneId: SceneId) -> NavigationManager {
+    nonisolated static func shared(on sceneId: SceneId) -> NavigationManager {
         Store<SceneState>.shared(on: sceneId).storage[NavigationManagerKey.self]
     }
     
@@ -142,10 +143,10 @@ public class NavigationManager {
 
 // MARK: -
 
-extension SceneState {
+extension Store where State == SceneState {
     /// 当前场景可共享状态的 Store 存储器
     @usableFromInline
-    var navManager: NavigationManager {
+    nonisolated var navManager: NavigationManager {
         self.storage[NavigationManagerKey.self]
     }
 }

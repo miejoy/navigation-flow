@@ -9,7 +9,7 @@ import ViewFlow
 import SwiftUI
 
 /// 可用于 Push 的界面
-public protocol PushableView: RoutableView {
+public protocol PushableView: RoutableView, Sendable {
 }
 
 /// 可用于 Push 的无初始化参数界面

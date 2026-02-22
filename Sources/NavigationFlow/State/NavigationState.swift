@@ -44,6 +44,7 @@ public struct NavigationState: FullStorableViewState {
     }
     
     /// 统一处理推出界面方法
+    @MainActor
     mutating func pushWith(pushAction: NavigationAction.InnerPushAction, on sceneId: SceneId) {
         var navPage = pushAction.page
         if pushAction.page.viewMaker == nil &&
@@ -108,7 +109,7 @@ public struct NavigationState: FullStorableViewState {
 }
 
 /// 导航中的一页数据（内部使用）
-struct NavigationPage: Hashable {
+struct NavigationPage: Hashable, @unchecked Sendable {
     static func == (lhs: NavigationPage, rhs: NavigationPage) -> Bool {
         lhs.pageUUID == rhs.pageUUID
     }
@@ -118,7 +119,7 @@ struct NavigationPage: Hashable {
     // 这里为什么不直接保存 ViewRouteData，
     // 主要由于有些场景无法构造出来，比如传入的是 View 实例，那就只能用 viewMake 构造了
     let viewRoute: AnyViewRoute
-    var viewInitData: Any
+    var viewInitData: Sendable
     // 界面构造器，如果有，优先使用这个
     let viewMaker: PushedViewMaker?
     

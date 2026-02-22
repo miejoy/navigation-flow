@@ -220,7 +220,7 @@ extension Store where State == NavigationState {
     @discardableResult
     public func push(
         _ route: AnyViewRoute,
-        _ data: Any = Void(),
+        _ data: Sendable = Void(),
         baseOn: AnyViewRoute? = nil
     ) -> Bool {
         guard let viewRouteData = route.wrapper(data) else {
@@ -247,7 +247,7 @@ extension Store where State == NavigationState {
     @discardableResult
     public func pushOnRoot(
         _ route: AnyViewRoute,
-        _ data: Any = Void()
+        _ data: Sendable = Void()
     ) -> Bool {
         guard let viewRouteData = route.wrapper(data) else {
             NavigationMonitor.shared.fatalError("Push view [\(route)] failed! Cann't make viewRouteData with data [\(data)]")

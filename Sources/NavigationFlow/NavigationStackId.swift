@@ -8,7 +8,7 @@
 import Foundation
 
 /// 导航堆栈ID
-public protocol NavigationStackId: CustomStringConvertible {
+public protocol NavigationStackId: CustomStringConvertible, Sendable {
     var stackId: String { get }
 }
 
@@ -40,5 +40,5 @@ public struct SharedNavigationStackId: NavigationStackId {
 
 extension SharedNavigationStackId {
     /// 主共享导航堆栈ID
-    public static var main = SharedNavigationStackId(stackId: "Main")
+    public static let main = SharedNavigationStackId(stackId: "Main")
 }

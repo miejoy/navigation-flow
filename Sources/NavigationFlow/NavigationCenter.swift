@@ -11,7 +11,7 @@ import ViewFlow
 
 /// 导航中心，主要用于注册可 Push 界面，独立存储，不会保存在 AppState
 public final class NavigationCenter {
-    public static let shared: NavigationCenter = .init()
+    nonisolated(unsafe) public static let shared: NavigationCenter = .init()
     
     var registerMap: [AnyViewRoute: PushedViewMaker] = [:]
     
