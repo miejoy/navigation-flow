@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// 内部使用的，Push 之后的 View 的制造器，用于包装制作可推入界面的过程
+/// 内部使用的，Push 之后的 View 的制造器，用于包装可推入界面的过程
 struct PushedViewMaker {
     
     let check: (Sendable) -> Sendable?
@@ -33,7 +33,6 @@ struct PushedViewMaker {
             if let data = data as? V.InitData {
                 return AnyView(V(data))
             }
-            // 这里需要记录异常
             NavigationMonitor.shared.fatalError("Make pushable view '\(String(describing: V.self))' failed. Convert to initialization data of '\(String(describing: V.InitData.self))' failed")
             return AnyView(EmptyView())
         }

@@ -105,7 +105,7 @@ public class NavigationManager {
                 if let oldStack = oldContainer.navStack,
                    oldStack !== navStack {
                     // 不同，需要抛异常
-                    NavigationMonitor.shared.fatalError("Add shared navigation stack[\(navStack)] with stackId[\(sharedStackId)] failed! Exist other stack[\(oldStack)]")
+                    NavigationMonitor.shared.fatalError("Add shared navigation stack[\(navStack)] with stackId[\(sharedStackId)] failed! Existing other stack[\(oldStack)]")
                 }
             }
             

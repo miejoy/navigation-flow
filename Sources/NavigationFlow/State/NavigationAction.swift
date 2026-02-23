@@ -292,9 +292,9 @@ extension NavigationAction {
     
     // MARK: - Pop
     
-    /// 弹出消失指定数量的界面
+    /// 弹出指定数量的界面
     ///
-    /// - Parameter popCount: 需要弹出消失的界面数量，默认是 1 个
+    /// - Parameter popCount: 需要弹出的界面数量，默认是 1 个
     /// - Parameter route: 从哪个界面开始弹出，默认是顶部
     /// - Returns Self: 返回构造好的自己
     public static func pop(_ popCount: UInt = 1, from route: AnyViewRoute? = nil) -> Self {
@@ -305,7 +305,7 @@ extension NavigationAction {
         return pop(popCount, targetRoute)
     }
     
-    /// 弹出消失直到指定的路由对应界面
+    /// 弹出直到指定的路由对应界面
     ///
     /// - Parameter route: 直到指定的 route 对应界面
     /// - Returns Self: 返回构造好的自己
@@ -317,7 +317,7 @@ extension NavigationAction {
         return pop(0, targetRoute)
     }
     
-    /// 弹出消失到根视图
+    /// 弹出直到根视图
     ///
     /// - Returns Self: 返回构造好的自己
     public static func popToRoot() -> Self {

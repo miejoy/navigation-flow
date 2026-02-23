@@ -261,9 +261,9 @@ extension Store where State == NavigationState {
     
     // MARK: - Pop
     
-    /// 弹出消失指定数量的界面
+    /// 弹出指定数量的界面
     ///
-    /// - Parameter popCount: 需要弹出消失的界面数量，默认是 1 个
+    /// - Parameter popCount: 需要弹出的界面数量，默认是 1 个
     /// - Parameter route: 从哪个界面开始弹出，默认是顶部
     @inlinable
     public func pop(_ popCount: UInt = 1, from route: AnyViewRoute? = nil) {
@@ -272,7 +272,7 @@ extension Store where State == NavigationState {
         }
     }
     
-    /// 弹出消失到根视图
+    /// 弹出直到根视图
     @inlinable
     public func popToRoot() {
         withAnimation {
