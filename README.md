@@ -55,7 +55,7 @@ dependencies: [
 ### 前置准备工作
 
 - 使用 NavigationStackFlow 包装需要导航堆栈的根界面（这里使用导航堆栈修饰器 NavigationStackModifier() 是一样的效果）
-- 使用 registerPushOn 方法注册可推入界面界面，注册的界面可直接用路由来推入，不需要知道对应界面
+- 使用 registerPushOn 方法注册可推入界面，注册的界面可直接用路由来推入，不需要知道对应界面
 
 ```swift
 import SwiftUI

@@ -21,9 +21,9 @@ public struct NavigationAction: Action {
         var baseOnRoute: InnerRouteOf?
     }
     
-    /// 消失相关事件
+    /// 弹出相关事件
     struct InnerPopAction: Sendable {
-        /// 依赖于 target 的销毁数，为 0  时即表示 target 变为最顶层
+        /// 依赖于 target 的弹出数，为 0 时即表示 target 变为最顶层
         let popCount: UInt
         let targetRoute: InnerRouteOf?
     }
@@ -45,9 +45,9 @@ extension NavigationAction {
     
     /// 推入展示对应界面
     ///
-    /// - Parameter view: 需要展示界面
+    /// - Parameter view: 需要展示的界面
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
-    /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter route: 基于哪个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push<P:PushableView>(
         _ view: P,
@@ -61,9 +61,9 @@ extension NavigationAction {
         return push(view, title, routeOf)
     }
     
-    /// 从跟视图推入展示对应界面
+    /// 从根视图推入展示对应界面
     ///
-    /// - Parameter view: 需要展示界面
+    /// - Parameter view: 需要展示的界面
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
     /// - Returns Self: 返回构造好的自己
     public static func pushOnRoot<P:PushableView>(
@@ -99,7 +99,7 @@ extension NavigationAction {
     /// - Parameter viewType: 需要展示界面的类型
     /// - Parameter initData: 需要展示界面初始化所需要的数据
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
-    /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter route: 基于哪个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push<P:PushableView>(
         _ viewType: P.Type,
@@ -118,7 +118,7 @@ extension NavigationAction {
     ///
     /// - Parameter viewType: 需要展示界面的类型
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
-    /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter route: 基于哪个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push<P:PushableView>(
         _ viewType: P.Type,
@@ -132,7 +132,7 @@ extension NavigationAction {
         return push(P.self, (), title, routeOf)
     }
     
-    /// 从跟视图推入展示对应界面
+    /// 从根视图推入展示对应界面
     ///
     /// - Parameter viewType: 需要展示界面的类型
     /// - Parameter initData: 需要展示界面初始化所需要的数据
@@ -146,7 +146,7 @@ extension NavigationAction {
         push(P.self, initData, title, .root)
     }
     
-    /// 从跟视图推入展示对应无参数初始化界面
+    /// 从根视图推入展示对应无参数初始化界面
     ///
     /// - Parameter viewType: 需要展示界面的类型
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
@@ -185,7 +185,7 @@ extension NavigationAction {
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
-    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push<InitData>(
         _ route: ViewRoute<InitData>,
@@ -204,7 +204,7 @@ extension NavigationAction {
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
-    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push(
         _ route: ViewRoute<Void>,
@@ -218,7 +218,7 @@ extension NavigationAction {
         return push(route.wrapper(()), title, routeOf)
     }
     
-    /// 从跟视图推入展示对应路由的界面
+    /// 从根视图推入展示对应路由的界面
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
@@ -232,7 +232,7 @@ extension NavigationAction {
         push(route.wrapper(data), title, .root)
     }
     
-    /// 从跟视图推入展示对应无参数路由的界面
+    /// 从根视图推入展示对应无参数路由的界面
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Returns Self: 返回构造好的自己
@@ -249,7 +249,7 @@ extension NavigationAction {
     ///
     /// - Parameter routeData: 需要展示界面的路由数据
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
-    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
     /// - Returns Self: 返回构造好的自己
     public static func push(
         _ routeData: ViewRouteData,
@@ -263,7 +263,7 @@ extension NavigationAction {
         return push(routeData, title, routeOf)
     }
     
-    /// 从跟视图推入展示对应路由的界面
+    /// 从根视图推入展示对应路由的界面
     ///
     /// - Parameter routeData: 需要展示界面的路由数据
     /// - Parameter title: 展示界面的导航标题，这里只是建议标题
@@ -294,8 +294,8 @@ extension NavigationAction {
     
     /// 弹出消失指定数量的界面
     ///
-    /// - Parameter popCount: 需要弹出消失的界面数，默认是 1 个
-    /// - Parameter route: 从那个界面开始弹出，默认是顶部
+    /// - Parameter popCount: 需要弹出消失的界面数量，默认是 1 个
+    /// - Parameter route: 从哪个界面开始弹出，默认是顶部
     /// - Returns Self: 返回构造好的自己
     public static func pop(_ popCount: UInt = 1, from route: AnyViewRoute? = nil) -> Self {
         var targetRoute: InnerRouteOf? = nil
@@ -307,7 +307,7 @@ extension NavigationAction {
     
     /// 弹出消失直到指定的路由对应界面
     ///
-    /// - Parameter route: 直到的指定 route 对应界面
+    /// - Parameter route: 直到指定的 route 对应界面
     /// - Returns Self: 返回构造好的自己
     public static func pop(to route: AnyViewRoute? = nil) -> Self {
         var targetRoute: InnerRouteOf? = nil
@@ -317,7 +317,7 @@ extension NavigationAction {
         return pop(0, targetRoute)
     }
     
-    /// 弹出消失到跟试图
+    /// 弹出消失到根视图
     ///
     /// - Returns Self: 返回构造好的自己
     public static func popToRoot() -> Self {

@@ -10,12 +10,12 @@ import DataFlow
 import ViewFlow
 
 extension View {
-    /// 注册对应可展示界面
+    /// 注册对应可推入界面
     public func registerPushableView<V: PushableView>(_ pushableViewType: V.Type, file: String = #fileID, function: String = #function, line: Int = #line) -> some View {
         return registerPushableView(pushableViewType, for: V.defaultRoute, file: file, function: function, line: line)
     }
     
-    /// 注册对应可展示界面
+    /// 注册对应可推入界面
     public func registerPushableView<V: PushableView>(_ pushableViewType: V.Type, for route: ViewRoute<V.InitData>, file: String = #fileID, function: String = #function, line: Int = #line) -> some View {
         return self.modifier(PushableRegisterModifier(callback: { sceneId in
             let navManager = NavigationManager.shared(on: sceneId)
@@ -27,7 +27,7 @@ extension View {
         }))
     }
     
-    /// 在回调内注册对应可展示界面
+    /// 在回调内注册对应可推入界面
     public func registerPushOn(_ callback: @escaping (_ navManager: NavigationManager) -> Void, file: String = #fileID, function: String = #function, line: Int = #line) -> some View {
         return self.modifier(PushableRegisterModifier(callback: { sceneId in
             let navManager = NavigationManager.shared(on: sceneId)

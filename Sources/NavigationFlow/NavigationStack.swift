@@ -17,8 +17,8 @@ extension Store where State == NavigationState {
     
     /// 推入展示对应界面
     ///
-    /// - Parameter view: 需要展示界面
-    /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter view: 需要展示的界面
+    /// - Parameter route: 基于哪个路由的界面展示，默认是最顶部
     @inlinable
     public func push<P: PushableView>(
         _ view: P,
@@ -33,9 +33,9 @@ extension Store where State == NavigationState {
         }
     }
     
-    /// 从跟视图推入展示对应界面
+    /// 从根视图推入展示对应界面
     ///
-    /// - Parameter view: 需要展示界面
+    /// - Parameter view: 需要展示的界面
     /// - Parameter initData: 需要展示界面初始化所需要的数据
     @inlinable
     public func pushOnRoot<P:PushableView>(
@@ -52,7 +52,7 @@ extension Store where State == NavigationState {
     ///
     /// - Parameter viewType: 需要展示界面的类型
     /// - Parameter initData: 需要展示界面初始化所需要的数据
-    /// - Parameter route: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter route: 基于哪个路由的界面展示，默认是最顶部
     @inlinable
     public func push<P: PushableView>(
         _ viewType: P.Type,
@@ -82,7 +82,7 @@ extension Store where State == NavigationState {
         }
     }
     
-    /// 从跟视图推入展示对应界面
+    /// 从根视图推入展示对应界面
     ///
     /// - Parameter viewType: 需要展示界面的类型
     /// - Parameter initData: 需要展示界面初始化所需要的数据
@@ -96,7 +96,7 @@ extension Store where State == NavigationState {
         }
     }
     
-    /// 从跟视图推入展示对应无参数初始化界面
+    /// 从根视图推入展示对应无参数初始化界面
     ///
     /// - Parameter viewType: 需要展示界面的类型
     @inlinable
@@ -114,7 +114,7 @@ extension Store where State == NavigationState {
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
-    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
     @inlinable
     public func push<InitData>(
         _ route: ViewRoute<InitData>,
@@ -133,7 +133,7 @@ extension Store where State == NavigationState {
     /// 推入展示对应无参数路由的界面
     ///
     /// - Parameter route: 需要展示界面的路由
-    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
     @inlinable
     public func push(
         _ route: ViewRoute<Void>,
@@ -148,7 +148,7 @@ extension Store where State == NavigationState {
         }
     }
     
-    /// 从跟视图推入展示对应路由的界面
+    /// 从根视图推入展示对应路由的界面
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
@@ -162,7 +162,7 @@ extension Store where State == NavigationState {
         }
     }
     
-    /// 从跟视图推入展示对应无参数路由的界面
+    /// 从根视图推入展示对应无参数路由的界面
     ///
     /// - Parameter route: 需要展示界面的路由
     @inlinable
@@ -179,7 +179,7 @@ extension Store where State == NavigationState {
     /// 推入展示对应路由的界面
     ///
     /// - Parameter routeData: 需要展示界面的路由数据
-    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
     @inlinable
     public func push(
         _ routeData: ViewRouteData,
@@ -194,7 +194,7 @@ extension Store where State == NavigationState {
         }
     }
     
-    /// 从跟视图推入展示对应路由的界面
+    /// 从根视图推入展示对应路由的界面
     ///
     /// - Parameter routeData: 需要展示界面的路由数据
     /// - Parameter initData: 需要展示界面初始化所需要的数据
@@ -214,7 +214,7 @@ extension Store where State == NavigationState {
     ///
     /// - Parameter route: 需要展示界面的路由
     /// - Parameter initData: 需要展示界面初始化所需要的数据
-    /// - Parameter baseOn: 基于那个路由的界面展示，默认是最顶部
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
     /// - Returns: 返回是否推入成功
     @inlinable
     @discardableResult
@@ -224,7 +224,7 @@ extension Store where State == NavigationState {
         baseOn: AnyViewRoute? = nil
     ) -> Bool {
         guard let viewRouteData = route.wrapper(data) else {
-            NavigationMonitor.shared.fatalError("Push view [\(route)] failed! Cann't make viewRouteData with data [\(data)]")
+            NavigationMonitor.shared.fatalError("Push view [\(route)] failed! Can't make viewRouteData with data [\(data)]")
             return false
         }
         if baseOn == nil {
@@ -237,7 +237,7 @@ extension Store where State == NavigationState {
         return true
     }
     
-    /// 从跟视图推入展示对应路由的界面
+    /// 从根视图推入展示对应路由的界面
     /// 注意: 这种方式有可能失败，建议自行构造 ViewRouteData，然后使用上面方法代替。此方法后期可能删除
     ///
     /// - Parameter route: 需要展示界面的路由
@@ -250,7 +250,7 @@ extension Store where State == NavigationState {
         _ data: Sendable = Void()
     ) -> Bool {
         guard let viewRouteData = route.wrapper(data) else {
-            NavigationMonitor.shared.fatalError("Push view [\(route)] failed! Cann't make viewRouteData with data [\(data)]")
+            NavigationMonitor.shared.fatalError("Push view [\(route)] failed! Can't make viewRouteData with data [\(data)]")
             return false
         }
         withAnimation {
@@ -263,8 +263,8 @@ extension Store where State == NavigationState {
     
     /// 弹出消失指定数量的界面
     ///
-    /// - Parameter popCount: 需要弹出消失的界面数，默认是 1 个
-    /// - Parameter route: 从那个界面开始弹出，默认是顶部
+    /// - Parameter popCount: 需要弹出消失的界面数量，默认是 1 个
+    /// - Parameter route: 从哪个界面开始弹出，默认是顶部
     @inlinable
     public func pop(_ popCount: UInt = 1, from route: AnyViewRoute? = nil) {
         withAnimation {
@@ -272,7 +272,7 @@ extension Store where State == NavigationState {
         }
     }
     
-    /// 弹出消失到跟试图
+    /// 弹出消失到根视图
     @inlinable
     public func popToRoot() {
         withAnimation {

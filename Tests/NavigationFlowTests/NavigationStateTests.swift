@@ -404,9 +404,9 @@ struct NavigationStateTests {
 }
 
 extension NavigationState {
-    static func makeNormalNavStack(_ file: String = #file, _ func: String = #function) -> Store<NavigationState> {
-        print("make with stackId: \(file):\(`func`)\n")
-        let store = Store<NavigationState>.box(.init(NormalNavigationStackId(stackId: "\(file):\(`func`)")))
+    static func makeNormalNavStack(_ file: String = #file, _ function: String = #function) -> Store<NavigationState> {
+        print("make with stackId: \(file):\(function)\n")
+        let store = Store<NavigationState>.box(.init(NormalNavigationStackId(stackId: "\(file):\(function)")))
         // 由于 data_flow 中的 loadReducers 会被异步执行，这里需要等待执行完成，后期 data_flow 支持 MainActor 后可修复
         // sleep(1)
         return store
