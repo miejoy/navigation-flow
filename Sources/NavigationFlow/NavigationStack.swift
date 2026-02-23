@@ -311,3 +311,23 @@ extension Store where State == NavigationState {
         NavigationManager.shared(on: sceneId).makeView(of: page, for: self, on: sceneId)
     }
 }
+
+// MARK: - NavigationStackId
+
+extension DefaultStoreStorageKey where Value == NavigationStackId {
+    /// 导航堆栈 ID 对应 Key
+    static let stackId: Self = .init("stackId", SharedNavigationStackId.main)
+}
+
+extension Store where State == NavigationState {
+    // 提供非隔离域的 sceneId 访问
+    nonisolated public var stackId: NavigationStackId {
+        if Thread.isMainThread {
+            MainActor.assumeIsolated {
+                self.state.stackId
+            }
+        } else {
+            self[.stackId]
+        }
+    }
+}

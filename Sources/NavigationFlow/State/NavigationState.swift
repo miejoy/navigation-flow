@@ -10,6 +10,8 @@ import DataFlow
 import ViewFlow
 import SwiftUI
 
+// MARK: - NavigationState
+
 /// 导航状态
 public struct NavigationState: FullStorableViewState {
     public typealias BindAction = NavigationAction
@@ -19,6 +21,11 @@ public struct NavigationState: FullStorableViewState {
     
     public init(_ stackId: NavigationStackId) {
         self.stackId = stackId
+    }
+    
+    public static func assembly(store: Store<some StorableState>, with state: some StorableState) {
+        guard let store = store as? Store<Self>, let state = state as? Self else { return }
+        store[.stackId] = state.stackId
     }
     
     public static func loadReducers(on store: Store<NavigationState>) {
@@ -107,6 +114,8 @@ public struct NavigationState: FullStorableViewState {
         }
     }
 }
+
+// MARK: - NavigationPage
 
 /// 导航中的一页数据（内部使用）
 struct NavigationPage: Hashable, @unchecked Sendable {
