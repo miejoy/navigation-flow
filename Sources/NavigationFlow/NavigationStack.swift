@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ModuleMonitor
 import DataFlow
 import ViewFlow
 import SwiftUI

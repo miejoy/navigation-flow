@@ -7,13 +7,13 @@ NavigationFlow 是自定义 RSV(Resource & State & View) 设计模式中 State �
 [![Swift](https://github.com/miejoy/navigation-flow/actions/workflows/test.yml/badge.svg)](https://github.com/miejoy/navigation-flow/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/miejoy/navigation-flow/branch/main/graph/badge.svg)](https://codecov.io/gh/miejoy/navigation-flow)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
-[![Swift](https://img.shields.io/badge/swift-5.8-brightgreen.svg)](https://swift.org)
+[![Swift](https://img.shields.io/badge/swift-6.2-brightgreen.svg)](https://swift.org)
 
 ## 依赖
 
 - iOS 16.0+ / macOS 13+
-- Xcode 15.0+
-- Swift 5.8+
+- Xcode 26.0+
+- Swift 6.2+
 
 ## 简介
 

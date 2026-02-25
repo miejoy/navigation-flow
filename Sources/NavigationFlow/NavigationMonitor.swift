@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 import ViewFlow
-import DataFlow
+import ModuleMonitor
 
 /// 导航相关事件
 public enum NavigationEvent: MonitorEvent, Sendable {
@@ -26,7 +26,7 @@ public protocol NavigationMonitorObserver: MonitorObserver {
 }
 
 /// 导航监视器
-public final class NavigationMonitor: BaseMonitor<NavigationEvent> {
+public final class NavigationMonitor: ModuleMonitor<NavigationEvent> {
     public nonisolated(unsafe) static let shared: NavigationMonitor = {
         NavigationMonitor { event, observer in
             DispatchQueue.executeOnMain {
