@@ -26,8 +26,8 @@ public protocol NavigationMonitorObserver: MonitorObserver {
 }
 
 /// 导航监视器
-public final class NavigationMonitor: ModuleMonitor<NavigationEvent> {
-    public nonisolated(unsafe) static let shared: NavigationMonitor = {
+public final class NavigationMonitor: ModuleMonitor<NavigationEvent>, @unchecked Sendable {
+    public static let shared: NavigationMonitor = {
         NavigationMonitor { event, observer in
             DispatchQueue.executeOnMain {
                 (observer as? NavigationMonitorObserver)?.receiveNavigationEvent(event)
