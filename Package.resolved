@@ -16,7 +16,7 @@
       "location" : "https://github.com/miejoy/module-monitor.git",
       "state" : {
         "branch" : "main",
-        "revision" : "0603c5d1e9fe4918dfd5c96649d81d12a30525f9"
+        "revision" : "1160cf41ccf018ce154819622babe0dd60af12ee"
       }
     },
     {
@@ -25,7 +25,7 @@
       "location" : "https://github.com/miejoy/view-flow.git",
       "state" : {
         "branch" : "main",
-        "revision" : "be58bf1e75aa44687f0d4f02f81e679a3e82b454"
+        "revision" : "9c538252e3fdd7845e53761ae6426faa814edf1e"
       }
     }
   ],
