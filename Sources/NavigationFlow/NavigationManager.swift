@@ -111,7 +111,7 @@ public class NavigationManager {
             
             // 这里用弱引用保存
             mapSharedStacks[sharedStackId.stackId] = .init(navStack: navStack)
-            navStack.setDestroyCallback { [weak self] _ in
+            navStack.addDestroyCallback { [weak self] _ in
                 self?.mapSharedStacks.removeValue(forKey: sharedStackId.stackId)
             }
         }
