@@ -38,19 +38,17 @@ public struct NavigationStackFlow<Content: View>: View {
     }
     
     public var body: some View {
-        NavigationView {
-            NavigationStack(path: $navState.arrPaths) {
-                content
-                    .navigationDestination(for: NavigationPage.self) { page in
-                        $navState.makePushView(of: page, on: sceneId)
-                            .environment(\.navStack, $navState)
-                    }
-            }
-            .environment(\.navStack, $navState)
-            .onAppear {
-                navManager.addNavStack($navState, at: viewPath)
-                // 暂时不需要 remove
-            }
+        NavigationStack(path: $navState.arrPaths) {
+            content
+                .navigationDestination(for: NavigationPage.self) { page in
+                    $navState.makePushView(of: page, on: sceneId)
+                        .environment(\.navStack, $navState)
+                }
+        }
+        .environment(\.navStack, $navState)
+        .onAppear {
+            navManager.addNavStack($navState, at: viewPath)
+            // 暂时不需要 remove
         }
     }
 }
