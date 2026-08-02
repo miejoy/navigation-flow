@@ -242,6 +242,70 @@ struct PushSecondView: VoidPushableView {
 }
 ```
 
+### 使用可返回结果路由推入界面
+
+当需要推入一个界面并等待其返回结果时（如选择器界面），可使用 `ResultableView` 协议配合 async push API：
+
+```swift
+import SwiftUI
+import NavigationFlow
+import ViewFlow
+
+// 定义可返回结果的选择器界面
+struct ItemPickerView: PushableView, ResultableView {
+    typealias InitParam = [String]
+    typealias ResultData = String
+
+    @Environment(\.dismiss) var dismiss
+    let routeData: ResultableRouteData<[String], String>
+
+    init(_ routeData: ResultableRouteData<[String], String>) {
+        self.routeData = routeData
+    }
+
+    var content: some View {
+        VStack {
+            ForEach(routeData.initData, id: \.self) { item in
+                Button(item) {
+                    routeData.finishRoute(item)
+                    dismiss()
+                }
+            }
+            Button("取消") {
+                dismiss()  // pop 时 reducer 自动调 cancelRoute
+            }
+        }
+    }
+}
+
+// 调用方
+struct ContentView: View {
+    @Environment(\.navStack) var navStack
+
+    var body: some View {
+        Button("选择") {
+            Task {
+                do {
+                    let picked = try await navStack?.push(
+                        ItemPickerView.defaultRoute,
+                        ["苹果", "香蕉", "橙子"]
+                    )
+                    print("选择了：\(picked)")
+                } catch ViewRouteError.cancelled {
+                    print("用户取消")
+                } catch ViewRouteError.failed(let reason) {
+                    print("路由失败：\(reason)")
+                }
+            }
+        }
+    }
+}
+```
+
+- 界面调用 `routeData.finishRoute(result)` 返回结果，调用方收到 `.finished`
+- 用户 pop / popToRoot / remove 时，reducer 自动对被移出的 page 调 `cancelRoute`，调用方收到 `.cancelled`
+- 路由未注册或 baseOn 路由不存在时，reducer 自动调 `failRoute`，调用方收到 `.failed`
+
 ## 作者
 
 Raymond.huang: raymond0huang@gmail.com

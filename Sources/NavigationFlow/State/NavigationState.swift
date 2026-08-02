@@ -16,8 +16,12 @@ import SwiftUI
 public struct NavigationState: FullStorableViewState {
     public typealias BindAction = NavigationAction
     
-    var stackId: NavigationStackId
+    /// 当前栈 ID
+    public var stackId: NavigationStackId
     var arrPaths: [NavigationPage] = []
+    
+    /// 当前栈中界面数量（调试用）
+    public var pathCount: Int { arrPaths.count }
     
     public init(_ stackId: NavigationStackId) {
         self.stackId = stackId
@@ -45,6 +49,7 @@ public struct NavigationState: FullStorableViewState {
                     NavigationMonitor.shared.record(event: .removeFailedTargetRouteNotFound(viewRoute))
                     return
                 }
+                state.arrPaths[index].cancelRoute()
                 state.arrPaths.remove(at: index)
             }
         }
@@ -56,6 +61,7 @@ public struct NavigationState: FullStorableViewState {
         var navPage = pushAction.page
         if pushAction.page.viewMaker == nil &&
             !NavigationManager.shared(on: sceneId).canMakeView(of: &navPage) {
+            navPage.failRoute(reason: "Cannot make view for route: \(pushAction.page.viewRoute.description)")
             NavigationMonitor.shared.record(event: .pushFailedNotRegister(pushAction.page.viewRoute))
             return
         }
@@ -63,6 +69,7 @@ public struct NavigationState: FullStorableViewState {
         if let baseOn = pushAction.baseOnRoute {
             switch baseOn {
             case .root:
+                arrPaths.forEach { $0.cancelRoute() }
                 arrPaths.removeAll()
             case .route(let viewRoute):
                 let index = arrPaths.lastIndex { page in
@@ -70,11 +77,13 @@ public struct NavigationState: FullStorableViewState {
                 }
                 guard let index = index else {
                     // 没有找到，需要记录
+                    navPage.failRoute(reason: "Base on route not found: \(viewRoute.description)")
                     NavigationMonitor.shared.record(event: .pushFailedBaseOnRouteNotFound(viewRoute))
                     return
                 }
                 let nextIndex = arrPaths.index(after: index)
                 if nextIndex != arrPaths.endIndex {
+                    arrPaths[nextIndex...].forEach { $0.cancelRoute() }
                     arrPaths.removeSubrange(nextIndex...)
                 }
             }
@@ -87,6 +96,7 @@ public struct NavigationState: FullStorableViewState {
         if let baseOn = popAction.targetRoute {
             switch baseOn {
             case .root:
+                arrPaths.forEach { $0.cancelRoute() }
                 arrPaths.removeAll()
                 return
             case .route(let viewRoute):
@@ -100,15 +110,19 @@ public struct NavigationState: FullStorableViewState {
                 }
                 let nextIndex = arrPaths.index(after: index)
                 if nextIndex != arrPaths.endIndex {
+                    arrPaths[nextIndex...].forEach { $0.cancelRoute() }
                     arrPaths.removeSubrange(nextIndex...)
                 }
             }
         }
         if popAction.popCount > 0 {
             if popAction.popCount <= arrPaths.count {
+                let removeStart = arrPaths.count - Int(popAction.popCount)
+                arrPaths[removeStart...].forEach { $0.cancelRoute() }
                 arrPaths.removeLast(Int(popAction.popCount))
             } else {
                 NavigationMonitor.shared.fatalError("Pop \(popAction.popCount) view while \(arrPaths.count) views exist")
+                arrPaths.forEach { $0.cancelRoute() }
                 arrPaths.removeAll()
             }
         }
@@ -150,5 +164,17 @@ struct NavigationPage: Hashable, @unchecked Sendable {
         self.viewInitData = ()
         self.title = title
         self.viewMaker = viewMaker
+    }
+
+    // MARK: - Resultable
+
+    /// 如果 initData 实现了 `CancellableRouteData`，调用其 `cancelRoute()`；否则 no-op
+    func cancelRoute() {
+        (viewInitData as? CancellableRouteData)?.cancelRoute()
+    }
+
+    /// 如果 initData 实现了 `CancellableRouteData`，调用其 `failRoute(reason:)`；否则 no-op
+    func failRoute(reason: String) {
+        (viewInitData as? CancellableRouteData)?.failRoute(reason: reason)
     }
 }

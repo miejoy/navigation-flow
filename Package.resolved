@@ -7,7 +7,7 @@
       "location" : "https://github.com/miejoy/data-flow.git",
       "state" : {
         "branch" : "main",
-        "revision" : "b3af7e6f56a1a1e37b02bdc984b3157033b736c9"
+        "revision" : "1d9c57daf9ee502dcdc55b9baa86ec62c0688761"
       }
     },
     {
@@ -25,7 +25,7 @@
       "location" : "https://github.com/miejoy/view-flow.git",
       "state" : {
         "branch" : "main",
-        "revision" : "9c538252e3fdd7845e53761ae6426faa814edf1e"
+        "revision" : "fe94c7a252583ada3082b2e304a98e181e6a8e9e"
       }
     }
   ],

@@ -260,6 +260,47 @@ extension Store where State == NavigationState {
         return true
     }
     
+    // MARK: -Push With Result Route
+
+    /// 推入展示对应结果路由的界面，等待界面返回结果
+    ///
+    /// - Parameter route: 需要展示界面的结果路由
+    /// - Parameter data: 初始化界面所需参数
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
+    /// - Returns: 界面返回的结果数据
+    /// - Throws: `ViewRouteError.cancelled` 用户取消；`ViewRouteError.failed` 路由展示失败
+    public func push<InitData: Sendable, ResultData: Sendable>(
+        _ route: ResultViewRoute<InitData, ResultData>,
+        _ data: InitData,
+        baseOn: AnyViewRoute? = nil
+    ) async throws -> ResultData {
+        try await withCheckedThrowingContinuation { continuation in
+            let resultRouteData = ResultableRouteData<InitData, ResultData>(data) { result in
+                continuation.resume(with: result.resultToResultData())
+            }
+            if baseOn == nil {
+                self.send(action: .push(route.wrapper(resultRouteData), baseOn: baseOn))
+            } else {
+                withAnimation {
+                    self.send(action: .push(route.wrapper(resultRouteData), baseOn: baseOn))
+                }
+            }
+        }
+    }
+
+    /// 推入展示对应结果路由的界面（无初始化参数），等待界面返回结果
+    ///
+    /// - Parameter route: 需要展示界面的结果路由
+    /// - Parameter baseOn: 基于哪个路由的界面展示，默认是最顶部
+    /// - Returns: 界面返回的结果数据
+    /// - Throws: `ViewRouteError.cancelled` 用户取消；`ViewRouteError.failed` 路由展示失败
+    public func push<ResultData: Sendable>(
+        _ route: ResultViewRoute<Void, ResultData>,
+        baseOn: AnyViewRoute? = nil
+    ) async throws -> ResultData {
+        try await push(route, Void(), baseOn: baseOn)
+    }
+
     // MARK: - Pop
     
     /// 弹出指定数量的界面
@@ -304,9 +345,9 @@ extension Store where State == NavigationState {
             self.send(action: .remove(with: route))
         }
     }
-        
-    // MARK: - Make View
     
+    // MARK: - Make View
+
     @MainActor
     func makePushView(of page: NavigationPage, on sceneId: SceneId) -> some View {
         NavigationManager.shared(on: sceneId).makeView(of: page, for: self, on: sceneId)
