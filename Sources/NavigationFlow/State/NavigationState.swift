@@ -17,7 +17,7 @@ public struct NavigationState: FullStorableViewState {
     public typealias BindAction = NavigationAction
     
     /// 当前栈 ID
-    public var stackId: NavigationStackId
+    var stackId: NavigationStackId
     var arrPaths: [NavigationPage] = []
     
     /// 当前栈中界面数量（调试用）
